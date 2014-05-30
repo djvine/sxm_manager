@@ -4,7 +4,7 @@ except ImportError:
     from distutils.core import setup
 
 config = {
-    'description': 'My Project',
+    'description': 'Scanning X-ray Micorscope Manager Daemon',
     'author': 'David J. Vine',
     'url': 'URL to get it at.',
     'download_url': 'Where to download it.',

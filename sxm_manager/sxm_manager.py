@@ -9,21 +9,6 @@ import scipy as sp
 import ipdb
 import settings.2xfm
 
-class Message(object):
-
-    def __init__(self, message_pv):
-        self.message_pv = message_pv
-
-    def thread_func(self, message):
-
-        epics.caput(self.message_pv, message)
-        time.sleep(1)
-        epics.caput(self.message_pv, '')
-
-
-    def put(self, message):
-        threading.Thread(target=self.thread_func, args=(message,)).start()
-
 class StageStack(epics.Device):
 
     def __init__(self,**kwargs):
@@ -127,11 +112,6 @@ class BeginScan(EIO):
 
         super(BeginScan, self).__init__(cPV = iocprefix+sxm_prefix+'begin_scan', **kwargs)
 
-class HeartBeat(EIO):
-    def __init__(self, **kwargs):
-
-        super(HeartBeat, self).__init__(cPV = iocprefix+sxm_prefix+'heartbeat', **kwargs)
-
 class SXM_Manager(object):
 
     def __init__(self):
@@ -149,36 +129,23 @@ class SXM_Manager(object):
         for sc in settings.scalers:
             setattr(self, sc, scaler.Scaler(self.ioc_prefix+sc))
 
-        # define stages
-        if DEBUG:
-            self.sample = StageStack(x = iocprefix+'m1', y = iocprefix+'m2', z = iocprefix+'m3')
-            self.zp = StageStack(x = iocprefix+'m1', y = iocprefix+'m2', z = iocprefix+'m3')
-            self.osa = StageStack(x = iocprefix+'m1', y = iocprefix+'m2', z = iocprefix+'m3')
-            self.xfd = StageStack(x = iocprefix+'m1', y = iocprefix+'m2', z = iocprefix+'m3')
-            self.vlm = StageStack(x = iocprefix+'m1', y = iocprefix+'m2', z = iocprefix+'m3')
-            self.ccd = StageStack(x = iocprefix+'m1', y = iocprefix+'m2', z = iocprefix+'m3')
+        # define stage stacks
+        for stack in setting.stage_stacks.keys():
+            setattr(self, stack, StageStack())
+            for stage, pvname in settings.strage_stacks[stack].itertitems():
+                setattr(getattr(self, stack), stage, pvname)
 
-        else:
-            self.sample = StageStack(x = iocprefix+'m13', y = iocprefix+'m14', theta = iocprefix+'m12',
-                     fine_x = iocprefix+'MCL:s1:X_pos', fine_y = iocprefix+'MCL:s1:Y_pos')
-            self.zp = StageStack(x = iocprefix+'m37', y = iocprefix+'m38', z = iocprefix+'m3')
-            self.osa = StageStack(x = iocprefix+'m39', y = iocprefix+'m40', z = iocprefix+'m4')
-            self.xfd = StageStack(x = iocprefix+'m7', y = iocprefix+'m8', z = iocprefix+'m9')
-            self.vlm = StageStack(x = iocprefix+'m19', y = iocprefix+'m20', z = iocprefix+'m21')
-            self.ccd = StageStack(x = iocprefix+'m22', y = iocprefix+'m23', z = iocprefix+'m32')
-            self.tandem_energy = epics.PV('2idb0:userTran1.A')
-            self.sgm_energy = epics.PV('2idb0:userTran1.B')
-            self.U55_energy = epics.PV('2idb0userTran1.I')
+        # add other PVs
+        for pv, value in settings.pvs.iteritems():
+            setattr(self, pv, value)
 
         # Define MEDM/EPICS interfaces
-        self.message = Message(iocprefix+sxm_prefix+'message')
-        self.scan_axis_1_name = epics.PV(iocprefix+sxm_prefix+'scan_axis_1_name')
-        self.scan_axis_2_name = epics.PV(iocprefix+sxm_prefix+'scan_axis_2_name')
-        self.scan_axis_3_name = epics.PV(iocprefix+sxm_prefix+'scan_axis_3_name')
-        self.abort_scan = epics.PV('2idb1:AbortScans.PROC')
-        self.thinking = epics.PV(iocprefix+sxm_prefix+'thinking.VAL')
-        self.heartbeat = HeartBeat(name = 'heartbeat', value = 0,
-                                   handler = self.toggle_heartbeat)
+        self.scan_axis_1_name = epics.PV(sxm_prefix+'scan_axis_1_name')
+        self.scan_axis_2_name = epics.PV(sxm_prefix+'scan_axis_2_name')
+        self.scan_axis_3_name = epics.PV(sxm_prefix+'scan_axis_3_name')
+        self.abort_scan = epics.PV(self.ioc_prefix+'AbortScans.PROC')
+        self.thinking = epics.PV(sxm_prefix+'thinking.VAL')
+
         # Define common scan axes
         self.scan_axes = {}
         self.scan_axes['coarse_xy'] = ScanAxes(name='coarse_xy',    value = 0,
