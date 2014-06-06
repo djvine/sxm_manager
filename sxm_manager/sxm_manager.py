@@ -3,11 +3,11 @@ import epics
 from epics.devices import scan, scaler
 from epics.motor import MotorException
 import time
+import multiprocessing as mp
 import threading
-import Pyro4
 import scipy as sp
 import ipdb
-import settings.2xfm
+import settings.djv
 
 class StageStack(epics.Device):
 
@@ -21,102 +21,13 @@ class StageStack(epics.Device):
             except MotorException:
                 setattr(self, key, epics.PV(kwargs[key]))
 
-class Shutter(epics.Device):
+class SXM_Manager(mp.Process):
 
-    def __init__(self, shutter_pv):
-        self._shutter = epics.PV(shutter_pv)
-        self.open_state = 1
-        self.close_state = 0
+    def __init__(self, task_queue):
+        mp.Process.__init__(self)
+        self.task_queue = task_queue
 
-    def make_open(self):
-        self._shutter.put(self.open_state)
-
-    def make_close(self):
-        self._shutter.put(self.close_state)
-
-    def toggle(self):
-        self._shutter.put(1-self._shutter.get())
-
-def in_thread(func):
-    def in_thread2(self=None, *args, **kwargs):
-        threading.Thread(target=func, args=(self,args,kwargs)).start()
-    return in_thread2
-
-
-class EIO(object): # EPICS interface object
-
-    """
-    This class provides an object oriented approach to interfacing with EPICS/MEDM.
-
-    The typical workflow involves pressing a button on a MEDM screen and having the daemon
-    process the callback and run the appropriate handler.
-
-    Each EIO has:
-        * an epics control PV (to which will be associated a callback)
-        * a value for which this EIOP instance is selected
-        * a handler function
-
-    Example: Setting up a specific scan type
-
-    coarse_xy = EIO( cPV = iocprefix+'scan_type_select', value = 0, name='coarse_xy', handler = set_scan_type )
-    """
-
-    interface_PVs = {}
-    EIOs = {}
-
-    def __init__(self, **kwargs):
-
-        if kwargs['cPV'] is not None:
-            if kwargs['cPV'] not in EIO.interface_PVs.keys():
-                print 'New interface PV', kwargs['cPV']
-                EIO.interface_PVs[kwargs['cPV']] = epics.PV(kwargs['cPV'], connection_timeout = 0.1,
-                                                            callback = kwargs['handler'])
-            else:
-                l=[]
-                for handler_tuple in EIO.interface_PVs.values():
-                    try:
-                        l.append(handler_tuple.callbacks[0][0]==kwargs['handler'])
-                    except:
-                        pass
-                if not any(l):
-                    print 'Found interface PV without callback'
-                    EIO.interface_PVs[kwargs['cPV']].callback(kwargs['handler'])
-        print 'Adding new EIO', kwargs['name']
-        EIO.EIOs[kwargs['name']] = (kwargs['value'], kwargs['cPV'])
-
-        for key in kwargs.keys():
-            print 'adding attr to', kwargs['name']
-            setattr(self, key, kwargs[key])
-
-class ScanAxes(EIO):
-
-    def __init__(self, **kwargs):
-
-        super(ScanAxes, self).__init__(cPV=iocprefix+sxm_prefix+'scan_axes_select.VAL', **kwargs)
-
-class ScanType(EIO):
-
-    def __init__(self, **kwargs):
-
-        super(ScanType, self).__init__(cPV=iocprefix+sxm_prefix+'scan_type_select.VAL', **kwargs)
-
-class AutoShutter(EIO):
-
-    def __init__(self, **kwargs):
-
-        super(AutoShutter, self).__init__(cPV = iocprefix+sxm_prefix+'autoshutter', **kwargs)
-
-class BeginScan(EIO):
-
-    def __init__(self, **kwargs):
-
-        super(BeginScan, self).__init__(cPV = iocprefix+sxm_prefix+'begin_scan', **kwargs)
-
-class SXM_Manager(object):
-
-    def __init__(self):
-
-        self.sxm_prefix = settings.soft_prefix
+        self.soft_prefix = settings.soft_prefix
         self.ioc_prefix = settings.ioc_prefix
         self.xfd_prefix = settings.xfd_prefix
         self.cam_prefix = settings.cam_prefix
@@ -140,75 +51,41 @@ class SXM_Manager(object):
             setattr(self, pv, value)
 
         # Define MEDM/EPICS interfaces
-        self.scan_axis_1_name = epics.PV(sxm_prefix+'scan_axis_1_name')
-        self.scan_axis_2_name = epics.PV(sxm_prefix+'scan_axis_2_name')
-        self.scan_axis_3_name = epics.PV(sxm_prefix+'scan_axis_3_name')
+        self.scan_axis_1_name = epics.PV(self.soft_prefix+'scan_axis_name_1')
+        self.scan_axis_2_name = epics.PV(self.soft_prefix+'scan_axis_name_2')
         self.abort_scan = epics.PV(self.ioc_prefix+'AbortScans.PROC')
-        self.thinking = epics.PV(sxm_prefix+'thinking.VAL')
+        self.thinking = epics.PV(self.soft_prefix+'thinking.VAL')
 
         # Define common scan axes
-        self.scan_axes = {}
-        self.scan_axes['coarse_xy'] = ScanAxes(name='coarse_xy',    value = 0,
-                                  pvs = (self.sample.x,self.sample.y),
-                                  handler = self.set_scan_axes)
-        self.scan_axes['coarse_xz'] = ScanAxes(name='coarse_xz',    value = 1,
-                                  pvs = (self.sample.x, self.zp.z),
-                                  handler = self.set_scan_axes)
-        self.scan_axes['coarse_yz'] = ScanAxes(name='coarse_yz',    value = 2,
-                                  pvs = (self.sample.y, self.zp.z),
-                                  handler = self.set_scan_axes)
-        self.scan_axes['fine_xy'] = ScanAxes(name='fine_xy',        value = 3,
-                                  pvs = (self.sample.fine_x,self.sample.fine_y),
-                                  handler = self.set_scan_axes)
-        self.scan_axes['focus_xz'] = ScanAxes(name='focus_xz',      value = 4,
-                                  pvs = (self.sample.fine_x,self.zp.z),
-                                  handler = self.set_scan_axes)
-        self.scan_axes['focus_yz'] = ScanAxes(name='focus_yz',      value = 5,
-                                  pvs = (self.sample.fine_y,self.zp.z),
-                                  handler = self.set_scan_axes)
-        self.scan_axes['xanes'] = ScanAxes(name='xanes',            value = 6,
-                                  pvs = (self.tandem_energy, self.ccd.x),
-                                  handler = self.set_scan_axes)
-        self.scan_axes['fine_tomo'] = ScanAxes(name='fine_tomo',    value = 7,
-                                  pvs = (self.sample.fine_x, self.sample.fine_y, self.sample.theta),
-                                  handler = self.set_scan_axes)
-        self.scan_axes['coarse_tomo'] = ScanAxes(name='coarse_tomo', value = 8,
-                                  pvs = (self.sample.x, self.sample.y, self.sample.theta),
-                                  handler = self.set_scan_axes)
-        self.scand = None
+        self.scan_axes = settings.scan_axes
 
+        self.callbacks = settings.callbacks
 
-        # Define scan types
-        self.scan_type = {}
-        self.scan_type['stxm'] = ScanType(name='stxm', value = 0, handler = self.set_scan_type)
-        self.scan_type['ccd'] = ScanType(name='ccd', value = 1, handler = self.set_scan_type)
-        self.scan_type['dpc'] = ScanType(name='dpc', value = 2, handler = self.set_scan_type)
-        self.scan_type['xfm'] = ScanType(name='xfm', value = 3, handler = self.set_scan_type)
+    def run(self):
+        while True:
+            next_task = self.task_queue.get()
+            if next_task is None:
+                print '{:s}: Exiting'.format(self.name)
+                self.task_queue.task_done()
+                break
+            else:
+                pvname, value = next_task
+                self.callback[pvname](pvname=pvname, value=value)
+                self.task_queue.task_done()
+        return
 
-        # Define autoshuttering
-        self.autoshutter = AutoShutter(name='autoshutter', value = 0,
-                                       handler = self.toggle_autoshutter_state,
-                                       state = epics.PV(iocprefix+sxm_prefix+'autoshutter_state',
-                                                           connection_timeout=0.1)
-                                       )
+    def on_changes(self, pvname=None, value=None, **kw):
+        self.task_queue.put([pvname, value])
 
-        self.begin_scan = BeginScan(name='begin_scan', value = 0,
-                                    handler = self.do_scan)
+    @staticmethod
+    def heartbeat_wait(task_queue, pvname, value):
+       task_queue.put([pvname, value])
 
-
-    def close(self):
-        SXM_Manager.instances = {}
-
-    def kill_daemon(self):
-        del(SXM_Manager.instances[SXM_Manager.instances.keys()[0]])
-
-    @in_thread
-    def toggle_heartbeat(self, *args, **kwargs):
-        if args[1]['value'] == 0:
-            time.sleep(5.0)
-            EIO.interface_PVs[iocprefix+sxm_prefix+'heartbeat'].put(1)
-
-    @in_thread
+    def toggle_heartbeat(self, value=None, **kws):
+        pv.put(1-value)
+        t = Threading.thread(target=heartbeat_wait, args=(self.task_queue,pvname,1-value))
+        t.start()
+    """
     def do_scan(self, *args, **kwargs):
 
         if args[1]['value'] == 1:
@@ -293,7 +170,6 @@ class SXM_Manager(object):
                 self.scan3.EXSC = 1
             self.thinking.put(0)
 
-    @in_thread
     def set_scan_type(self, *args, **kwargs):
 
         self.thinking.put(1)
@@ -388,7 +264,6 @@ class SXM_Manager(object):
 
         self.thinking.put(0)
 
-    @in_thread
     def toggle_autoshutter_state(self, *args, **kwargs):
 
         if args[1]['value'] == 1:
@@ -396,7 +271,6 @@ class SXM_Manager(object):
             self.autoshutter.state.put(1-self.autoshutter.state.get())
             self.thinking.put(0)
 
-    @in_thread
     def set_scan_axes(self, *args, **kwargs):
         self.thinking.put(1)
 
@@ -434,32 +308,17 @@ class SXM_Manager(object):
             self.scan3.T1PV = self.scan2.PV('EXSC').pvname
             self.scan3.P1CP=0.
         self.thinking.put(0)
+        """
 
-def start_server():
-    sxm = SXM_Manager()
-
-    daemon = Pyro4.Daemon()
-    ns = Pyro4.locateNS()
-    uri = daemon.register(sxm)
-    ns.register('sxm', uri)
-    print "Ready."
-    daemon.requestLoop()
-
-def start_client():
-    sxm = Pyro4.Proxy("PYRONAME:sxm")
-
-
+def mainloop():
+    try:
+        task_queue = mp.Joinable_Queue()
+        sxm = SXM_Manager(task_queue)
+        sxm.start()
+    except KeyboardInterrupt:
+        task_queue.put(None)
+        task_queue.join()
+    print('Mainloop Exiting')
 
 if __name__ == '__main__':
-    #s=SXM_Manager()
-
-    start_server()
-
-  # python -m Pyro4.naming
-
-
-
-
-
-
-
+    mainloop()
