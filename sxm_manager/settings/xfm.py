@@ -9,19 +9,19 @@ xfd_prefix = 'dxpXMAP2xfm3'
 # Syntax: {pvname: function_name}
 # When pvname changes function_name will be called with pvname's value
 callbacks = {
-        #{soft_prefix+'scan_axes_select': 'select_scan_axes'},
+        soft_prefix+'scan_axes_select.VAL': 'select_scan_axes',
         #{soft_prefix+'scan_type_select': 'select_scan_type'},
         #{soft_prefix+'autoshutter': 'toggle_autoshutter_state'},
-        #{soft_prefix+'heartbeat': 'toggle_heartbeat'},
-        #{soft_prefix+'stepfly': 'toggle_stepfly_state'},
+        soft_prefix+'stepfly.VAL': 'toggle_stepfly_state',
         #{soft_prefix+'dwell': 'update_dwell'},
         #{soft_prefix+'begin_scan_1d': 'do_1d_scan'},
         #{soft_prefix+'begin_scan_2d': 'do_2d_scan'},
-        #{soft_prefix+'pinhole': 'define_pinhole'},
+        soft_prefix+'pinhole_define.VAL': 'pinhole_define',
+        soft_prefix+'pinhole_move.VAL': 'pinhole_move',
         soft_prefix+'toggle_lock.VAL': 'toggle_lock_state',
         soft_prefix+'heartbeat.VAL': 'toggle_heartbeat',
-        #{soft_prefix+'stage_stack_move': 'move_stage_stack'},
-        #{soft_prefix+'stage_stack_define': 'define_stage_stack'},
+        soft_prefix+'stage_stack_move.VAL': 'stage_stack_move',
+        soft_prefix+'stage_stack_define.VAL': 'stage_stack_define',
     }
 
 scan_records = ['scanH','scan1','scan2','scan3','FscanH','Fscan1','Fscan2','Fscan3']
@@ -87,5 +87,22 @@ lock_state = {
         5: 'osa',
         6: 'sample',
         7: 'tx_det'
+        }
+
+move_define_axes = {
+         1: ['zp20', 'in'],
+         2: ['zp20', 'out'],
+         3: ['zp10', 'in'],
+         4: ['zp10', 'out'],
+         5: ['osa', 'in'],
+         6: ['osa', 'out'],
+         7: ['sample', '0'],
+         8: ['sample', '1'],
+         9: ['sample', '2'],
+        10: ['sample', '3'],
+        11: ['sample', '4'],
+        12: ['tx_det', '1'],
+        13: ['tx_det', '2'],
+        14: ['tx_det', '3'],
         }
 

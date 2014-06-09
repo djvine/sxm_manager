@@ -49,6 +49,9 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
+# Vim
+*.swp
+
 *.txt~
 
 # Django secret key

@@ -1,4 +1,6 @@
-#!/home/beams/USER2IDB/python/bin/python
+#!/usr/bin/python2
+import signal
+import sys
 import epics
 from epics.devices import scan, scaler
 from epics.motor import MotorException
@@ -7,84 +9,109 @@ import multiprocessing as mp
 import threading
 import scipy as sp
 import ipdb
-import settings.djv
+from settings import xfm as cfg
 
-class StageStack(epics.Device):
+def in_thread(func):
+    def in_thread2(self=None, *args, **kwargs):
+        threading.Thread(target=func, args=(self,args,kwargs)).start()
+    return in_thread2
 
-    def __init__(self,**kwargs):
+class StageStack(object):
 
+    def __init__(self, **kwargs):
         "keywords should be name=epics_motor_pv"
-
+        self.axes = []
         for key in kwargs:
             try:
                 setattr(self, key, epics.Motor(kwargs[key]))
+                self.axes.append(key)
             except MotorException:
                 setattr(self, key, epics.PV(kwargs[key]))
 
-class SXM_Manager(mp.Process):
+    def toggle_lock_state(self):
+        state = self.lock_state.get()
+        self.lock_state.put(1-state)
+        for axis in self.axes:
+            getattr(self, axis).disabled = 1-state
+
+class SXM_Manager(object):
 
     def __init__(self, task_queue):
-        mp.Process.__init__(self)
         self.task_queue = task_queue
 
-        self.soft_prefix = settings.soft_prefix
-        self.ioc_prefix = settings.ioc_prefix
-        self.xfd_prefix = settings.xfd_prefix
-        self.cam_prefix = settings.cam_prefix
+        self.soft_prefix = cfg.soft_prefix
+        self.ioc_prefix = cfg.ioc_prefix
+        self.xfd_prefix = cfg.xfd_prefix
+        self.cam_prefix = cfg.cam_prefix
 
         # define scan records
-        for sc in settings.scan_records:
+        for sc in cfg.scan_records:
             setattr(self, sc, scan.Scan(self.ioc_prefix+sc))
 
         # define scalers
-        for sc in settings.scalers:
+        for sc in cfg.scalers:
             setattr(self, sc, scaler.Scaler(self.ioc_prefix+sc))
 
         # define stage stacks
-        for stack in setting.stage_stacks.keys():
-            setattr(self, stack, StageStack())
-            for stage, pvname in settings.strage_stacks[stack].itertitems():
-                setattr(getattr(self, stack), stage, pvname)
-
-        # add other PVs
-        for pv, value in settings.pvs.iteritems():
-            setattr(self, pv, value)
+        for stack in cfg.stage_stacks.keys():
+            setattr(self, stack, StageStack(**cfg.stage_stacks[stack]))
 
         # Define MEDM/EPICS interfaces
-        self.scan_axis_1_name = epics.PV(self.soft_prefix+'scan_axis_name_1')
-        self.scan_axis_2_name = epics.PV(self.soft_prefix+'scan_axis_name_2')
+        self.scan_axis_name_1 = epics.PV(self.soft_prefix+'scan_axis_name_1')
+        self.scan_axis_name_2 = epics.PV(self.soft_prefix+'scan_axis_name_2')
         self.abort_scan = epics.PV(self.ioc_prefix+'AbortScans.PROC')
         self.thinking = epics.PV(self.soft_prefix+'thinking.VAL')
 
         # Define common scan axes
-        self.scan_axes = settings.scan_axes
+        self.scan_axes = cfg.scan_axes
 
-        self.callbacks = settings.callbacks
+        # Define lock state
+        self.lock_state = cfg.lock_state
+
+        # Define Step or Fly State
+        self.stepfly = 'step'
+
+        # Add move/define axes
+        self.move_define_axes = cfg.move_define_axes
+
+        # Add control PVs & callbacks
+        self.callbacks = cfg.callbacks
+        self.c_pvs = {}
+        for c_pv in cfg.callbacks.keys():
+            self.c_pvs[c_pv] = epics.PV(c_pv, callback=self.on_changes)
 
     def run(self):
         while True:
             next_task = self.task_queue.get()
             if next_task is None:
-                print '{:s}: Exiting'.format(self.name)
+                print('{:s}: Exiting').format(self.name)
                 self.task_queue.task_done()
                 break
             else:
                 pvname, value = next_task
-                self.callback[pvname](pvname=pvname, value=value)
+                getattr(self, self.callbacks[pvname])(pvname=pvname, value=value)
                 self.task_queue.task_done()
         return
 
-    def on_changes(self, pvname=None, value=None, **kw):
-        self.task_queue.put([pvname, value])
+    def on_changes(self, *args, **kwargs):
+        self.task_queue.put([kwargs['pvname'], kwargs['value']])
 
     @staticmethod
-    def heartbeat_wait(task_queue, pvname, value):
-       task_queue.put([pvname, value])
-
-    def toggle_heartbeat(self, value=None, **kws):
+    def heartbeat_wait(task_queue, pv, value):
+        time.sleep(2.5)
         pv.put(1-value)
-        t = Threading.thread(target=heartbeat_wait, args=(self.task_queue,pvname,1-value))
+
+    def toggle_heartbeat(self, pvname, value=None, **kws):
+        t = threading.Thread(target=self.heartbeat_wait, args=(self.task_queue,self.c_pvs[pvname],value))
         t.start()
+
+    def toggle_lock_state(self, pvname, value, **kws):
+        if value>0:
+            getattr(self, self.lock_state[value]).toggle_lock_state()
+
+
+
+
     """
     def do_scan(self, *args, **kwargs):
 
@@ -271,54 +298,83 @@ class SXM_Manager(mp.Process):
             self.autoshutter.state.put(1-self.autoshutter.state.get())
             self.thinking.put(0)
 
-    def set_scan_axes(self, *args, **kwargs):
+    """
+    def toggle_stepfly_state(self, pvname, value, **kwargs):
+        if value==0:
+            self.stepfly = 'step'
+        else:
+            self.stepfly = 'fly'
+            self.select_scan_axes(None, 0) # Sample XY
+            self.c_pvs['2xfmS1:scan_axes_select.VAL'].put(0)
+
+
+    def select_scan_axes(self, pvname, value, **kwargs):
         self.thinking.put(1)
 
-        for key in self.scan_axes.keys():
-            try:
-                if self.scan_axes[key].value == args[1]['value']:
-                    axes = self.scan_axes[key].pvs
-            except KeyError:
-                if self.scan_axes[key].value == EIO.interface_PVs[iocprefix+sxm_prefix+'scan_axes_select.VAL'].get():
-                    axes = self.scan_axes[key].pvs
+        x_positioner, y_positioner = self.scan_axes[value]
+        x_stage, x_axis = x_positioner.split('.')
+        y_stage, y_axis = y_positioner.split('.')
 
-        for i, axis_pv in enumerate(axes):
-            try:
-                setattr(getattr(self, 'scan%d'%(i+1)), 'P1PV', axis_pv.PV('VAL').pvname)
-                setattr(getattr(self,  'scan_axis_%d_name'%(i+1)),'value', axis_pv.PV('DESC').value)
-            except KeyError:
-                self.log.error('Setting scan axes failed due to unknown scan type')
-            except AttributeError:
+        if self.stepfly == 'step':
+            self.scan1.P1PV = getattr(getattr(self, x_stage), x_axis).PV('VAL').pvname
+            self.scan2.P1PV = getattr(getattr(self, y_stage), y_axis).PV('VAL').pvname
+        else: #Fly
+            self.FscanH.P1PV = getattr(getattr(self, x_stage), x_axis).PV('VAL').pvname
+            self.Fscan1.P1PV = getattr(getattr(self, y_stage), y_axis).PV('VAL').pvname
 
-                if axis_pv.pvname == '2idb1:MCL:s1:X_pos':
-                    setattr(getattr(self, 'scan%d'%(i+1)), 'P1PV', axis_pv.pvname+'.VAL')
-                    setattr(getattr(self,  'scan_axis_%d_name'%(i+1)),'value', 'Fine X')
-                elif axis_pv.pvname == '2idb1:MCL:s1:Y_pos':
-                    setattr(getattr(self, 'scan%d'%(i+1)), 'P1PV', axis_pv.pvname+'.VAL')
-                    setattr(getattr(self,  'scan_axis_%d_name'%(i+1)),'value', 'Fine Y')
-                elif axis_pv.pvname == '2idb0:userTran1.A':
-                    setattr(getattr(self, 'scan%d'%(i+1)), 'P1PV', axis_pv.pvname)
-                    setattr(getattr(self,  'scan_axis_%d_name'%(i+1)),'value', 'Tandem Energy')
-        self.scan2.T1PV = self.scan1.PV('EXSC').pvname
-        self.scan1.P1CP = 0.
-        self.scan2.P1CP = 0.
-        self.scand = 2
-        if i==2:
-            self.scand = 3
-            self.scan3.T1PV = self.scan2.PV('EXSC').pvname
-            self.scan3.P1CP=0.
+        try:
+            self.scan_axis_name_1.put(getattr(getattr(self, x_stage), x_axis).DESC)
+            self.scan_axis_name_2.put(getattr(getattr(self, y_stage), y_axis).DESC)
+        except:
+            self.scan_axis_name_1.put('X Positioner')
+            self.scan_axis_name_2.put('Y Positioner')
+
         self.thinking.put(0)
-        """
+
+    def pinhole_move(self, pvname, value, **kwargs):
+        self.thinking.put(1)
+        self.pinhole.x.move(epics.caget(self.soft_prefix+'pinhole_x_{:d}.VAL'.format(value)))
+        self.pinhole.y.move(epics.caget(self.soft_prefix+'pinhole_y_{:d}.VAL'.format(value)))
+        self.thinking.put(0)
+
+    def pinhole_define(self, pvname, value, **kwargs):
+        self.thinking.put(1)
+        epics.caput(self.soft_prefix+'pinhole_x_{:d}.VAL'.format(value), self.pinhole.x.VAL)
+        epics.caput(self.soft_prefix+'pinhole_y_{:d}.VAL'.format(value), self.pinhole.y.VAL)
+        self.thinking.put(0)
+
+    def stage_stack_move(self, pvname, value, **kwargs):
+        if value>0:
+            stack, location = self.move_define_axes[value]
+
+            for axis in getattr(self, stack).axes:
+                if axis not in ['top', 'middle', 'theta']:
+                    getattr(getattr(self, stack), axis).move(epics.caget(self.soft_prefix+'{:s}_{:s}_{:s}.VAL'.format(stack, axis, location)))
+
+    def stage_stack_define(self, pvname, value, **kwargs):
+        if value>0:
+            stack, location = self.move_define_axes[value]
+
+            for axis in getattr(self, stack).axes:
+                if axis not in ['top', 'middle', 'theta']:
+                    epics.caput(self.soft_prefix+'{:s}_{:s}_{:s}.VAL'.format(stack, axis, location), getattr(getattr(self, stack), axis).VAL )
+
+def handle_exit(queue):
+    def signal_handler(signal,frame):
+        queue.put(None)
+        print('Caught ctrl-c, waiting for threads to exit')
+        sys.exit(0)
+    return signal_handler
 
 def mainloop():
-    try:
-        task_queue = mp.Joinable_Queue()
-        sxm = SXM_Manager(task_queue)
-        sxm.start()
-    except KeyboardInterrupt:
-        task_queue.put(None)
-        task_queue.join()
-    print('Mainloop Exiting')
+    task_queue = mp.JoinableQueue()
+    signal_handler = handle_exit(task_queue)
+    signal.signal(signal.SIGINT, signal_handler)
+    sxm = SXM_Manager(task_queue)
+    sxm.run()
+    print('Ready.')
+    ipdb.set_trace()
+    task_queue.join()
 
 if __name__ == '__main__':
     mainloop()
