@@ -10,18 +10,18 @@ xfd_prefix = 'dxpXMAP2xfm3'
 # When pvname changes function_name will be called with pvname's value
 callbacks = {
         soft_prefix+'scan_axes_select.VAL': 'select_scan_axes',
-        #{soft_prefix+'scan_type_select': 'select_scan_type'},
-        #{soft_prefix+'autoshutter': 'toggle_autoshutter_state'},
+        soft_prefix+'scan_type_select.VAL': 'select_scan_type',
         soft_prefix+'stepfly.VAL': 'toggle_stepfly_state',
-        #{soft_prefix+'dwell': 'update_dwell'},
-        #{soft_prefix+'begin_scan_1d': 'do_1d_scan'},
-        #{soft_prefix+'begin_scan_2d': 'do_2d_scan'},
+        soft_prefix+'dwell.VAL': 'update_dwell',
+        soft_prefix+'begin_scan_1d.VAL': 'do_1d_scan',
+        soft_prefix+'begin_scan_2d.VAL': 'do_2d_scan',
         soft_prefix+'pinhole_define.VAL': 'pinhole_define',
         soft_prefix+'pinhole_move.VAL': 'pinhole_move',
         soft_prefix+'toggle_lock.VAL': 'toggle_lock_state',
         soft_prefix+'heartbeat.VAL': 'toggle_heartbeat',
         soft_prefix+'stage_stack_move.VAL': 'stage_stack_move',
         soft_prefix+'stage_stack_define.VAL': 'stage_stack_define',
+        soft_prefix+'alignment.VAL': 'alignment_mode',
     }
 
 scan_records = ['scanH','scan1','scan2','scan3','FscanH','Fscan1','Fscan2','Fscan3']
@@ -101,8 +101,14 @@ move_define_axes = {
          9: ['sample', '2'],
         10: ['sample', '3'],
         11: ['sample', '4'],
-        12: ['tx_det', '1'],
-        13: ['tx_det', '2'],
-        14: ['tx_det', '3'],
+        12: ['tx_det', '1'], # CCD
+        13: ['tx_det', '2'], # CFG
+        14: ['tx_det', '3'], # Ptycho
         }
 
+# Scan estimate overhead - used to accurately estimate scan time
+time_estimate_overhead = {
+        #       'mode': [constant per pt, multiplier per pt, constant per line, multiplier per line]
+        'step': [0.0, 1.1, 0.0, 1.1],
+        'fly': [0.0, 1.1, 0.0, 1.1]
+        }

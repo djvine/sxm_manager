@@ -7,14 +7,10 @@ from epics.motor import MotorException
 import time
 import multiprocessing as mp
 import threading
+import numpy as np
 import scipy as sp
 import ipdb
 from settings import xfm as cfg
-
-def in_thread(func):
-    def in_thread2(self=None, *args, **kwargs):
-        threading.Thread(target=func, args=(self,args,kwargs)).start()
-    return in_thread2
 
 class StageStack(object):
 
@@ -44,15 +40,25 @@ class SXM_Manager(object):
         self.xfd_prefix = cfg.xfd_prefix
         self.cam_prefix = cfg.cam_prefix
 
+        self.callbacks = cfg.callbacks
         # define scan records
+        print('Initialize scan records...')
         for sc in cfg.scan_records:
             setattr(self, sc, scan.Scan(self.ioc_prefix+sc))
+            # Add time estimate callback
+            for name in ['NPTS', 'P1WD', 'P1SI']:
+                self.callbacks[getattr(self, sc).PV(name).pvname] = 'update_time_estimate'
+            # Add time remaining callback
+            if sc in ['scan2', 'Fscan1']:
+                self.callbacks[getattr(self, sc).PV('CPT').pvname] = 'update_time_remaining'
 
         # define scalers
+        print('Initialize scalers...')
         for sc in cfg.scalers:
             setattr(self, sc, scaler.Scaler(self.ioc_prefix+sc))
 
         # define stage stacks
+        print('Intialize stage stacks...')
         for stack in cfg.stage_stacks.keys():
             setattr(self, stack, StageStack(**cfg.stage_stacks[stack]))
 
@@ -75,9 +81,9 @@ class SXM_Manager(object):
         self.move_define_axes = cfg.move_define_axes
 
         # Add control PVs & callbacks
-        self.callbacks = cfg.callbacks
+        print('Initialize callbacks...')
         self.c_pvs = {}
-        for c_pv in cfg.callbacks.keys():
+        for c_pv in self.callbacks.keys():
             self.c_pvs[c_pv] = epics.PV(c_pv, callback=self.on_changes)
 
     def run(self):
@@ -109,30 +115,38 @@ class SXM_Manager(object):
         if value>0:
             getattr(self, self.lock_state[value]).toggle_lock_state()
 
+    def do_1d_scan(self, pvname, value, **kwargs):
 
+        self.thinking.put(1)
+        if value == 1:
 
+            if self.stepfly == 'step':
 
-    """
-    def do_scan(self, *args, **kwargs):
+                self.scan1.BSPV = ''
+                self.scan1.BSCD = 1
+                self.scan1.ASPV = ''
+                self.scan1.ASCD = 1
 
-        if args[1]['value'] == 1:
+                self.scan1.P1SM = 0 #Linear
+                self.scan1.P1AR = 1 # Relative
+                self.scan1.PASM = 2 # Prior Pos
+                self.scan1.PDLY = 0
 
-            self.thinking.put(1)
-            if self.scand == 2: # 2D scans
-                #N1,N2 = self.scan1.NPTS,self.scan2.NPTS
-                #self.scan1.reset()
-                #self.scan2.reset()
-                #self.scan1.NPTS,self.scan2.NPTS = N1, N2
-                if self.autoshutter.state.get() == 1:
-                    self.scan2.BSPV = '2idb1:9440:1:bo_0.VAL'
-                    self.scan2.BSCD = 0
-                    self.scan2.ASPV = '2idb1:9440:1:bo_0.VAL'
-                    self.scan2.ASCD = 1
-                else:
-                    self.scan2.BSPV = ''
-                    self.scan2.BSCD = 0
-                    self.scan2.ASPV = ''
-                    self.scan2.ASCD = 0
+                self.scan1.EXSC = 1
+
+        self.thinking.put(0)
+
+    def do_2d_scan(self, pvname, value, **kwargs):
+
+        self.thinking.put(1)
+        if value == 1:
+
+            if self.stepfly == 'step':
+
+                self.scan2.BSPV = ''
+                self.scan2.BSCD = 1
+                self.scan2.ASPV = ''
+                self.scan2.ASCD = 1
 
                 self.scan1.P1SM = 0 #Linear
                 self.scan2.P1SM = 0 #Linear
@@ -145,160 +159,21 @@ class SXM_Manager(object):
 
                 self.scan2.T1PV = self.scan1.PV('EXSC').pvname
 
-            elif self.scand==3: # 3D scans
-                #N1,N2,N3 = self.scan1.NPTS,self.scan2.NPTS, self.scan3.NPTS
-                #self.scan1.reset()
-                # self.scan2.reset()
-                #self.scan3.reset()
-                #self.scan1.NPTS,self.scan2.NPTS, self.scan3.NPTS = N1,N2,N3
-
-                if self.autoshutter.state.get() == 1:
-                    self.scan3.BSPV = '2idb1:9440:1:bo_0.VAL'
-                    self.scan3.BSCD = 0
-                    self.scan3.ASPV = '2idb1:9440:1:bo_0.VAL'
-                    self.scan3.ASCD = 1
-                else:
-                    self.scan3.BSPV = ''
-                    self.scan3.BSCD = 0
-                    self.scan3.ASPV = ''
-                    self.scan3.ASCD = 0
-                    self.scan2.BSPV = ''
-                    self.scan2.BSCD = 0
-                    self.scan2.ASPV = ''
-                    self.scan2.ASCD = 0
-
-                self.scan1.P1SM = 0 #Linear
-                self.scan2.P1SM = 0 #Linear
-                self.scan3.P1SM = 0 #Linear
-                self.scan1.P1AR = 1 # Relative
-                self.scan2.P1AR = 1 # Relative
-                self.scan3.P1AR = 1 # Relative
-                self.scan1.PASM = 2 # Prior Pos
-                self.scan2.PASM = 2 # Prior Pos
-                self.scan3.PASM = 2 # Prior Pos
-                self.scan1.PDLY = 0
-                self.scan2.PDLY = 0
-                self.scan3.PDLY = 0
-
-            #self.set_scan_type()
-            #self.set_scan_axes()
-            #self.thinking.put(1)
-            self.scan2.T1PV = self.scan1.PV('EXSC').pvname
-
-            # If XANES set energy settling time to 0.1
-            if EIO.interface_PVs[iocprefix+sxm_prefix+'scan_axes_select.VAL'].get() == 6:
-                self.scan1.PDLY = 0.1
-
-            if self.scand == 2:
                 self.scan2.EXSC = 1
-
-            elif self.scand == 3:
-                self.scan3.T1PV = self.scan2.PV('EXSC').pvname
-                self.scan3.EXSC = 1
-            self.thinking.put(0)
-
-    def set_scan_type(self, *args, **kwargs):
-
-        self.thinking.put(1)
-        for i in range(4):
-            setattr(getattr(self, 'scan1'), 'T%dPV'%(i+1), '')
-        for i in range(70):
-            setattr(getattr(self, 'scan1'), 'D%0.2dPV'%(i+1), '')
-
-        self.scan1.D01PV = 'S:SRcurrentAI'
-        self.scan1.D02PV = '2idb1:scaler1.S2'
-        self.scan1.D03PV = '2idb1:scaler1.S3'
-        self.scan1.D04PV = '2idb1:scaler1.S4'
-        self.scan1.D05PV = '2idb1:scaler1.S5'
-        self.scan1.D06PV = '2idb1:scaler1.T'
-
-        try:
-            scan_type = args[1]['value']
-        except KeyError:
-            scan_type = EIO.interface_PVs[iocprefix+sxm_prefix+'scan_type_select.VAL'].get()
-
-
-        if scan_type == 0: #stxm
-            self.scan1.T1PV = '2idb1:scaler1.CNT'
-
-        if scan_type == 1: # ccd
-            self.scan1.T1PV = '2idb1:scaler1.CNT'
-            self.scan1.T2PV = camprefix+'.AcquireCLBK'
-
-        if scan_type == 2: #dpc
-            self.scan1.T1PV = '2idb1:scaler1.CNT'
-            self.scan1.T2PV = '2idb1:scanH.EXSC'
-
-            self.scan1.D11PV = '2idb1:IP330_1.VAL'
-            self.scan1.D12PV = '2idb1:IP330_2.VAL'
-            self.scan1.D13PV = '2idb1:IP330_3.VAL'
-            self.scan1.D14PV = '2idb1:IP330_4.VAL'
-            self.scan1.D15PV = '2idb1:IP330_5.VAL'
-            self.scan1.D16PV = '2idb1:IP330_6.VAL'
-            self.scan1.D17PV = '2idb1:IP330_7.VAL'
-            self.scan1.D18PV = '2idb1:IP330_8.VAL'
-            self.scan1.D19PV = '2idb1:IP330_9.VAL'
-            self.scan1.D20PV = '2idb1:IP330_10.VAL'
-            self.scan1.D31PV = '2idb1:IP330_11.VAL'
-
-            self.scan1.D21PV = '2idb1:scaler1.S6'
-            self.scan1.D22PV = '2idb1:scaler1.S7'
-            self.scan1.D23PV = '2idb1:scaler1.S8'
-            self.scan1.D24PV = '2idb1:scaler1.S9'
-            self.scan1.D25PV = '2idb1:scaler1.S10'
-            self.scan1.D26PV = '2idb1:scaler1.S11'
-            self.scan1.D27PV = '2idb1:scaler1.S12'
-            self.scan1.D28PV = '2idb1:scaler1.S13'
-            self.scan1.D29PV = '2idb1:scaler1.S14'
-            self.scan1.D30PV = '2idb1:scaler1.S15'
-
-        if scan_type == 3: #xfm
-            self.scanH.reset()
-
-            self.scan1.T1PV = '2idb1:scaler1.CNT'
-            self.scan1.T2PV = '2idb1:scanH.EXSC'
-            #self.scan1.T3PV = camprefix+'Acquire'
-            #self.scan1.T2PV = XFD trigger PV
-
-            self.scanH.D01PV = xfdprefix+'mca1.VAL' # MCA Spectrum
-            self.scanH.NPTS = 1024
-            self.scanH.T1PV = xfdprefix+'mca1EraseStart'
-
-            self.scan1.D07PV = xfdprefix+'mca1.ERTM'
-            self.scan1.D08PV = xfdprefix+'mca1.ELTM'
-            self.scan1.D09PV = xfdprefix+'mca1.R0'
-            self.scan1.D10PV = xfdprefix+'mca1.R1'
-            self.scan1.D11PV = xfdprefix+'mca1.R2'
-            self.scan1.D12PV = xfdprefix+'mca1.R3'
-            self.scan1.D13PV = xfdprefix+'mca1.R4'
-            self.scan1.D14PV = xfdprefix+'mca1.R5'
-            self.scan1.D15PV = xfdprefix+'mca1.R6'
-            self.scan1.D16PV = xfdprefix+'mca1.R7'
-            self.scan1.D17PV = xfdprefix+'mca1.R8'
-            self.scan1.D18PV = xfdprefix+'mca1.R9'
-            #self.scan1.D19PV = xfdprefix+'mca1.FAST_PEAKS'
-            #self.scan1.D20PV = xfdprefix+'mca1.SLOW_PEAKS'
-            self.scan1.D21PV = '2idb1:scaler1.S6'
-            self.scan1.D22PV = '2idb1:scaler1.S7'
-            self.scan1.D23PV = '2idb1:scaler1.S8'
-            self.scan1.D24PV = '2idb1:scaler1.S9'
-            self.scan1.D25PV = '2idb1:scaler1.S10'
-            self.scan1.D26PV = '2idb1:scaler1.S11'
-            self.scan1.D27PV = '2idb1:scaler1.S12'
-            self.scan1.D28PV = '2idb1:scaler1.S13'
-            self.scan1.D29PV = '2idb1:scaler1.S14'
-            self.scan1.D30PV = '2idb1:scaler1.S15'
 
         self.thinking.put(0)
 
-    def toggle_autoshutter_state(self, *args, **kwargs):
+    def select_scan_type(self, value, **kwargs):
 
-        if args[1]['value'] == 1:
-            self.thinking.put(1)
-            self.autoshutter.state.put(1-self.autoshutter.state.get())
-            self.thinking.put(0)
+        self.thinking.put(1)
 
-    """
+        if value == 0: # CFG
+            pass
+        elif value == 1: # Ptycho
+            pass
+
+        self.thinking.put(0)
+
     def toggle_stepfly_state(self, pvname, value, **kwargs):
         if value==0:
             self.stepfly = 'step'
@@ -306,7 +181,7 @@ class SXM_Manager(object):
             self.stepfly = 'fly'
             self.select_scan_axes(None, 0) # Sample XY
             self.c_pvs['2xfmS1:scan_axes_select.VAL'].put(0)
-
+        self.update_time_estimate()
 
     def select_scan_axes(self, pvname, value, **kwargs):
         self.thinking.put(1)
@@ -343,21 +218,96 @@ class SXM_Manager(object):
         epics.caput(self.soft_prefix+'pinhole_y_{:d}.VAL'.format(value), self.pinhole.y.VAL)
         self.thinking.put(0)
 
-    def stage_stack_move(self, pvname, value, **kwargs):
+    def stage_stack_move(self, value, wait=False, **kwargs):
         if value>0:
             stack, location = self.move_define_axes[value]
 
             for axis in getattr(self, stack).axes:
                 if axis not in ['top', 'middle', 'theta']:
-                    getattr(getattr(self, stack), axis).move(epics.caget(self.soft_prefix+'{:s}_{:s}_{:s}.VAL'.format(stack, axis, location)))
+                    getattr(getattr(self, stack), axis).move(epics.caget(self.soft_prefix+'{:s}_{:s}_{:s}.VAL'.format(stack, axis, location)), wait=wait)
 
-    def stage_stack_define(self, pvname, value, **kwargs):
+    def stage_stack_define(self, value, **kwargs):
         if value>0:
             stack, location = self.move_define_axes[value]
 
             for axis in getattr(self, stack).axes:
                 if axis not in ['top', 'middle', 'theta']:
                     epics.caput(self.soft_prefix+'{:s}_{:s}_{:s}.VAL'.format(stack, axis, location), getattr(getattr(self, stack), axis).VAL )
+
+    def update_dwell(self, pvname, value, **kwargs):
+        # Send dwell to all the scalers
+        for sc in cfg.scalers:
+            try:
+                getattr(self, sc).CountTime(value)
+            except:
+                print("Couldn't set dwell time for {:s}.".format(sc))
+                pass
+
+        # Send dwell to the fluorescence detector
+        pass
+
+        # Send dwell to the ptycho camera
+        pass
+
+        self.update_time_estimate()
+
+    def update_time_estimate(self, **kwargs):
+        try:
+            dwell = self.c_pvs[self.soft_prefix+'dwell.VAL'].get()
+            if self.stepfly == 'step':
+                n_pts = self.scan1.NPTS
+                n_lines = self.scan2.NPTS
+                oh = cfg.time_estimate_overhead['step']
+            elif self.stepfly == 'fly':
+                n_pts = self.FscanH.NPTS
+                n_lines = self.Fscan1.NPTS
+                oh = cfg.time_estimate_overhead['fly']
+            time_per_line = oh[0]+dwell*n_pts*oh[1]
+            time_per_image = oh[2]+time_per_line*n_lines*oh[3]
+            epics.caput(self.soft_prefix+'hr_estimate_line.VAL', np.floor(time_per_line/3600.0))
+            epics.caput(self.soft_prefix+'min_estimate_line.VAL', np.mod(time_per_line, 3600.0)/60.0)
+            epics.caput(self.soft_prefix+'hr_estimate_image.VAL', np.floor(time_per_image/3600.0))
+            epics.caput(self.soft_prefix+'min_estimate_image.VAL', np.mod(time_per_image, 3600.0)/60.0)
+        except AttributeError:
+            pass
+
+    def update_time_remaining(self, **kwargs):
+        try:
+            dwell = self.c_pvs[self.soft_prefix+'dwell.VAL'].get()
+            if self.stepfly == 'step':
+                n_pts = self.scan1.NPTS
+                n_lines = self.scan2.NPTS
+                c_line = self.scan2.CPT
+                oh = cfg.time_estimate_overhead['step']
+            elif self.stepfly == 'fly':
+                n_pts = self.FscanH.NPTS
+                n_lines = self.Fscan1.NPTS
+                c_line = self.Fscan1.CPT
+                oh = cfg.time_estimate_overhead['fly']
+            if c_line>n_lines:
+                c_line = n_lines
+            time_per_line = oh[0]+dwell*n_pts*oh[1]
+            time_per_image = oh[2]+time_per_line*(n_lines-c_line)*oh[3]
+            epics.caput(self.soft_prefix+'hr_remaining.VAL', np.floor(time_per_image/3600.0), timeout=0.1)
+            epics.caput(self.soft_prefix+'min_remaining.VAL', np.mod(time_per_image, 3600.0)/60.0, timeout=0.1)
+        except AttributeError:
+            raise
+
+    def alignment_mode(self, value, **kwargs):
+        if value == 0: # Measurement mode
+            if self.c_pvs[self.soft_prefix+'scan_type_select.VAL'].get() == 0: # CFG
+                self.stage_stack_move(value=13)
+            elif self.c_pvs[self.soft_prefix+'scan_type_select.VAL'].get() == 1: # Ptycho
+                self.stage_stack_move(value=14)
+
+        elif value == 1: # Alignment mode
+            self.stage_stack_move(value=12)
+
+    def push_to_batch(self, value, **kwargs):
+        try:
+            pass
+        except:
+            pass
 
 def handle_exit(queue):
     def signal_handler(signal,frame):
@@ -371,8 +321,8 @@ def mainloop():
     signal_handler = handle_exit(task_queue)
     signal.signal(signal.SIGINT, signal_handler)
     sxm = SXM_Manager(task_queue)
-    sxm.run()
     print('Ready.')
+    sxm.run()
     ipdb.set_trace()
     task_queue.join()
 
