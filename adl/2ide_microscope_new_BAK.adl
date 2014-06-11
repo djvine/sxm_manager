@@ -5,7 +5,7 @@ file {
 }
 display {
 	object {
-		x=3
+		x=1
 		y=66
 		width=1200
 		height=701
@@ -9246,76 +9246,65 @@ composite {
 		chan="2xfmS1:stepfly.VAL"
 	}
 }
-composite {
+"message button" {
+	object {
+		x=1104
+		y=342
+		width=40
+		height=14
+	}
+	control {
+		chan="2xfmS1:stage_stack_move.VAL"
+		clr=14
+		bclr=51
+	}
+	label="CFG"
+	press_msg="13"
+	release_msg="0"
+}
+"message button" {
+	object {
+		x=1061
+		y=342
+		width=40
+		height=14
+	}
+	control {
+		chan="2xfmS1:stage_stack_move.VAL"
+		clr=14
+		bclr=51
+	}
+	label="CCD"
+	press_msg="12"
+	release_msg="0"
+}
+text {
 	object {
 		x=1033
 		y=342
-		width=154
+		width=25
+		height=13
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Move"
+}
+"message button" {
+	object {
+		x=1147
+		y=342
+		width=40
 		height=14
 	}
-	"composite name"=""
-	children {
-		"message button" {
-			object {
-				x=1104
-				y=342
-				width=40
-				height=14
-			}
-			control {
-				chan="2xfmS1:stage_stack_move.VAL"
-				clr=14
-				bclr=51
-			}
-			label="CCD"
-			press_msg="13"
-			release_msg="0"
-		}
-		"message button" {
-			object {
-				x=1061
-				y=342
-				width=40
-				height=14
-			}
-			control {
-				chan="2xfmS1:stage_stack_move.VAL"
-				clr=14
-				bclr=51
-			}
-			label="CFG"
-			press_msg="12"
-			release_msg="0"
-		}
-		text {
-			object {
-				x=1033
-				y=342
-				width=25
-				height=13
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Move"
-		}
-		"message button" {
-			object {
-				x=1147
-				y=342
-				width=40
-				height=14
-			}
-			control {
-				chan="2xfmS1:stage_stack_move.VAL"
-				clr=14
-				bclr=51
-			}
-			label="Ptycho"
-			press_msg="14"
-			release_msg="0"
-		}
+	control {
+		chan="2xfmS1:stage_stack_move.VAL"
+		clr=14
+		bclr=51
 	}
+	label="Ptycho"
+	press_msg="14"
+	release_msg="0"
 }
 composite {
 	object {

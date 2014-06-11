@@ -22,6 +22,7 @@ callbacks = {
         soft_prefix+'stage_stack_move.VAL': 'stage_stack_move',
         soft_prefix+'stage_stack_define.VAL': 'stage_stack_define',
         soft_prefix+'alignment.VAL': 'alignment_mode',
+        soft_prefix+'to_batch.VAL': 'push_to_batch',
     }
 
 scan_records = ['scanH','scan1','scan2','scan3','FscanH','Fscan1','Fscan2','Fscan3']

@@ -613,34 +613,13 @@ rectangle {
 		name="2ida_beamline.adl"
 	}
 	display[1] {
-		label="2-ID-B Mirrors"
-		name="m2m3_motors.adl"
+		label="Batch Scan"
+		name="batchscan_v4.adl"
+		args="P=2xfm:,B=1"
 	}
 	display[2] {
-		label="2-ID-B Beamline"
-		name="2idb_beamline.adl"
-	}
-	display[3] {
-		label="2-ID-B Hutch"
-		name="2idb_hutch.adl"
-	}
-	display[4] {
-		label="Spherical grating monochromator"
-		name="SGM.adl"
-	}
-	display[5] {
-		label="Photon Energy"
-		name="photon_energy.adl"
-	}
-	display[6] {
-		label="Saved Motor Positions"
-		name="saved_motor_positions.adl"
-		args="P=2idb1:"
-	}
-	display[7] {
-		label="CCD Autopump"
-		name="autopump_ccd.adl"
-		args="P=2idb1:,M=AP_CCD:"
+		label="Scans"
+		name="scan_setup.adl"
 	}
 	display[8] {
 		label="ZP Calculator"

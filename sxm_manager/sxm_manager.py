@@ -40,7 +40,17 @@ class SXM_Manager(object):
         self.xfd_prefix = cfg.xfd_prefix
         self.cam_prefix = cfg.cam_prefix
 
+        self.batch_x_width_pvname = '{:s}B1:scan1_{:d}:Width.VAL'
+        self.batch_x_center_pvname = '{:s}B1:scan1_{:d}:Center.VAL'
+        self.batch_x_npts_pvname = '{:s}B1:scan1_{:d}:NumPts.VAL'
+        self.batch_y_width_pvname = '{:s}B1:scan2_{:d}:Width.VAL'
+        self.batch_y_center_pvname = '{:s}B1:scan2_{:d}:Center.VAL'
+        self.batch_y_npts_pvname = '{:s}B1:scan2_{:d}:NumPts.VAL'
+        self.batch_dwell_pvname = '{:s}B1:scan_{:d}:Dwell.VAL'
+        self.batch_comment_pvname = '{:s}B1:scan_{:d}:Comment.VAL'
+
         self.callbacks = cfg.callbacks
+
         # define scan records
         print('Initialize scan records...')
         for sc in cfg.scan_records:
@@ -235,6 +245,7 @@ class SXM_Manager(object):
                     epics.caput(self.soft_prefix+'{:s}_{:s}_{:s}.VAL'.format(stack, axis, location), getattr(getattr(self, stack), axis).VAL )
 
     def update_dwell(self, pvname, value, **kwargs):
+        value /= 1e3 # ms to s
         # Send dwell to all the scalers
         for sc in cfg.scalers:
             try:
@@ -253,7 +264,7 @@ class SXM_Manager(object):
 
     def update_time_estimate(self, **kwargs):
         try:
-            dwell = self.c_pvs[self.soft_prefix+'dwell.VAL'].get()
+            dwell = self.c_pvs[self.soft_prefix+'dwell.VAL'].get()/1e3
             if self.stepfly == 'step':
                 n_pts = self.scan1.NPTS
                 n_lines = self.scan2.NPTS
@@ -271,9 +282,12 @@ class SXM_Manager(object):
         except AttributeError:
             pass
 
+        if self.stepfly == 'fly':
+            self.calculate_fly_ranges()
+
     def update_time_remaining(self, **kwargs):
         try:
-            dwell = self.c_pvs[self.soft_prefix+'dwell.VAL'].get()
+            dwell = self.c_pvs[self.soft_prefix+'dwell.VAL'].get()/1e3
             if self.stepfly == 'step':
                 n_pts = self.scan1.NPTS
                 n_lines = self.scan2.NPTS
@@ -295,19 +309,135 @@ class SXM_Manager(object):
 
     def alignment_mode(self, value, **kwargs):
         if value == 0: # Measurement mode
+            # Move OSA in
+            self.stage_stack_move(value=5)
             if self.c_pvs[self.soft_prefix+'scan_type_select.VAL'].get() == 0: # CFG
                 self.stage_stack_move(value=13)
             elif self.c_pvs[self.soft_prefix+'scan_type_select.VAL'].get() == 1: # Ptycho
                 self.stage_stack_move(value=14)
 
         elif value == 1: # Alignment mode
+            # Move OSA out
+            self.stage_stack_move(value=6)
+            # Move CCD in
             self.stage_stack_move(value=12)
 
     def push_to_batch(self, value, **kwargs):
+        if value>0:
+            value -= 1
+            try:
+                if self.stepfly == 'step':
+                    x_center = self.scan1.PV('P1CP').get()
+                    x_width = self.scan1.PV('P1WD').get()
+                    x_pts = self.scan1.PV('NPTS').get()
+                    y_center = self.scan2.PV('P1CP').get()
+                    y_width = self.scan2.PV('P1WD').get()
+                    y_pts = self.scan2.PV('NPTS').get()
+                elif self.stepfly == 'fly':
+                    x_center = self.FscanH.PV('P1CP').get()
+                    x_width = self.FscanH.PV('P1WD').get()
+                    x_pts = self.FscanH.PV('NPTS').get()
+                    y_center = self.Fscan1.PV('P1CP').get()
+                    y_width = self.Fscan1.PV('P1WD').get()
+                    y_pts = self.Fscan1.PV('NPTS').get()
+                comment = epics.caget('2xfm:userStringCalc10.DD')
+                dwell = self.c_pvs[self.soft_prefix+'dwell.VAL'].get()
+
+                print(self.batch_x_center_pvname.format(self.soft_prefix, value), x_center)
+                print(self.batch_x_width_pvname.format(self.soft_prefix, value), x_width)
+                print(self.batch_x_npts_pvname.format(self.soft_prefix, value), x_pts)
+                print(self.batch_y_center_pvname.format(self.soft_prefix, value), y_center)
+                print(self.batch_y_width_pvname.format(self.soft_prefix, value), y_width)
+                print(self.batch_y_npts_pvname.format(self.soft_prefix, value), y_pts)
+                print(self.batch_comment_pvname.format(self.soft_prefix, value), comment)
+                print(self.batch_dwell_pvname.format(self.soft_prefix, value), dwell)
+
+                #epics.caput(self.batch_x_center_pvname.format(self.soft_prefix, value), x_center)
+                #epics.caput(self.batch_x_width_pvname.format(self.soft_prefix, value), x_width)
+                #epics.caput(self.batch_x_npts_pvname.format(self.soft_prefix, value), x_pts)
+                #epics.caput(self.batch_y_center_pvname.format(self.soft_prefix, value), y_center)
+                #epics.caput(self.batch_y_width_pvname.format(self.soft_prefix, value), y_width)
+                #epics.caput(self.batch_y_npts_pvname.format(self.soft_prefix, value), y_pts)
+                #epics.caput(self.batch_comment_pvname.format(self.soft_prefix, value), comment)
+                #epics.caput(self.batch_dwell_pvname.format(self.soft_prefix, value), dwell)
+
+            except:
+                raise
+
+    def calculate_fly_ranges(self, **kwargs):
+        # Min speed
+        min_vel = epics.caget('2xfmS1:FlySetup:MinBaseVel.VAL')
+        max_vel = epics.caget('2xfmS1:FlySetup:MaxVelocity.VAL')
+        if min_vel == 0.0:
+            return
+        if max_vel == 0.0:
+            return
+        dwell = self.c_pvs[self.soft_prefix+'dwell.VAL'].get()/1e3
+        step = self.FscanH.PV('P1SI').get()
+        width = self.FscanH.PV('P1WD').get()
+        npts = self.FscanH.PV('NPTS').get()
+
+        if np.mod(step/0.0001, 1.0)>0.0:
+            epics.caput('2xfmS1:warning1.VAL', 'Step size should be multiple of 100nm')
+            epics.caput('2xfmS1:show_warning1.VAL', 1)
+        else:
+            epics.caput('2xfmS1:warning1.VAL', '')
+            epics.caput('2xfmS1:show_warning1.VAL', 0)
+
         try:
-            pass
+            epics.caput(self.soft_prefix+'max_dwell.VAL', step/min_vel)
+            epics.caput(self.soft_prefix+'min_dwell.VAL', step/max_vel)
+
+            epics.caput(self.soft_prefix+'max_step.VAL', dwell/min_vel)
+            epics.caput(self.soft_prefix+'min_step.VAL', 0.0001)
+
+            epics.caput(self.soft_prefix+'max_width.VAL', npts*dwell/min_vel)
+            epics.caput(self.soft_prefix+'min_width.VAL', npts*dwell/max_vel)
         except:
-            pass
+            raise
+
+    def align_cfg(self, **kwargs):
+        # Move cfg in
+        self.move_stage_stack(value=2, wait=True)
+
+        # set scaler count time
+        self.scaler1.time = 0.1
+
+        def move_to_peak(xl, yl):
+            xmax, ymax, m = None, None, None
+            for x in xl:
+                for y in yl:
+                    self.tx_det.x.move(x, wait=True)
+                    self.tx_det.y.move(y, wait=True)
+                    # Trigger scaler
+                    self.scaler1.count()
+                    if not m:
+                        m = self.scaler1.channel_5
+                        xm = x
+                        ym = y
+                    else:
+                        if self.scaler1.channel_5>m:
+                            m=self.scaler1.channel_5
+                            xm = x
+                            ym = y
+
+            self.tx_det.x.move(xm)
+            self.tx_det.y.move(ym)
+
+        # Scan 1 1.2x1.2mm
+        cur_pos_x = self.tx_det.x.get()
+        cur_pos_y = self.tx_det.y.get()
+        step_x = 0.06 #mm
+        step_y = 0.06 #mm
+        xl,yl = np.meshgrid(np.arange(-10,11)*step_x+cur_pos_x,np.arange(-10,11)*step_y+cur_pos_y)
+        move_to_peak(xl, yl)
+        # Scan 2 0.12x0.12mm
+        cur_pos_x = self.tx_det.x.get()
+        cur_pos_y = self.tx_det.y.get()
+        step_x = 0.006 #mm
+        step_y = 0.006 #mm
+        xl,yl = np.meshgrid(np.arange(-10,11)*step_x+cur_pos_x,np.arange(-10,11)*step_y+cur_pos_y)
+        move_to_peak(xl, yl)
 
 def handle_exit(queue):
     def signal_handler(signal,frame):
