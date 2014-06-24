@@ -5,8 +5,8 @@ file {
 }
 display {
 	object {
-		x=512
-		y=181
+		x=96
+		y=202
 		width=800
 		height=400
 	}
@@ -1146,7 +1146,7 @@ text {
 		x=707
 		y=133
 		width=60
-		height=18
+		height=15
 	}
 	display[0] {
 		label="X motor"
@@ -1170,7 +1170,7 @@ text {
 composite {
 	object {
 		x=639
-		y=154
+		y=150
 		width=144
 		height=20
 	}
@@ -1179,7 +1179,7 @@ composite {
 		"text entry" {
 			object {
 				x=713
-				y=154
+				y=150
 				width=70
 				height=20
 			}
@@ -1194,7 +1194,7 @@ composite {
 		composite {
 			object {
 				x=655
-				y=157
+				y=153
 				width=55
 				height=15
 			}
@@ -1203,7 +1203,7 @@ composite {
 				rectangle {
 					object {
 						x=655
-						y=157
+						y=153
 						width=55
 						height=15
 					}
@@ -1219,7 +1219,7 @@ composite {
 				"text update" {
 					object {
 						x=657
-						y=158
+						y=154
 						width=50
 						height=13
 					}
@@ -1237,7 +1237,7 @@ composite {
 				rectangle {
 					object {
 						x=655
-						y=157
+						y=153
 						width=55
 						height=15
 					}
@@ -1257,7 +1257,7 @@ composite {
 		composite {
 			object {
 				x=639
-				y=157
+				y=153
 				width=13
 				height=15
 			}
@@ -1266,7 +1266,7 @@ composite {
 				text {
 					object {
 						x=639
-						y=160
+						y=156
 						width=5
 						height=11
 					}
@@ -1279,7 +1279,7 @@ composite {
 				rectangle {
 					object {
 						x=647
-						y=157
+						y=153
 						width=5
 						height=5
 					}
@@ -1295,7 +1295,7 @@ composite {
 				rectangle {
 					object {
 						x=647
-						y=162
+						y=158
 						width=5
 						height=5
 					}
@@ -1311,7 +1311,7 @@ composite {
 				rectangle {
 					object {
 						x=647
-						y=167
+						y=163
 						width=5
 						height=5
 					}
@@ -1331,7 +1331,7 @@ composite {
 composite {
 	object {
 		x=639
-		y=177
+		y=173
 		width=144
 		height=20
 	}
@@ -1340,7 +1340,7 @@ composite {
 		"text entry" {
 			object {
 				x=713
-				y=177
+				y=173
 				width=70
 				height=20
 			}
@@ -1355,7 +1355,7 @@ composite {
 		composite {
 			object {
 				x=655
-				y=180
+				y=176
 				width=55
 				height=15
 			}
@@ -1364,7 +1364,7 @@ composite {
 				rectangle {
 					object {
 						x=655
-						y=180
+						y=176
 						width=55
 						height=15
 					}
@@ -1380,7 +1380,7 @@ composite {
 				"text update" {
 					object {
 						x=657
-						y=181
+						y=177
 						width=50
 						height=13
 					}
@@ -1398,7 +1398,7 @@ composite {
 				rectangle {
 					object {
 						x=655
-						y=180
+						y=176
 						width=55
 						height=15
 					}
@@ -1418,7 +1418,7 @@ composite {
 		composite {
 			object {
 				x=639
-				y=180
+				y=176
 				width=13
 				height=15
 			}
@@ -1427,7 +1427,7 @@ composite {
 				text {
 					object {
 						x=639
-						y=183
+						y=179
 						width=5
 						height=11
 					}
@@ -1440,7 +1440,7 @@ composite {
 				rectangle {
 					object {
 						x=647
-						y=180
+						y=176
 						width=5
 						height=5
 					}
@@ -1456,7 +1456,7 @@ composite {
 				rectangle {
 					object {
 						x=647
-						y=185
+						y=181
 						width=5
 						height=5
 					}
@@ -1472,7 +1472,7 @@ composite {
 				rectangle {
 					object {
 						x=647
-						y=190
+						y=186
 						width=5
 						height=5
 					}
@@ -1492,7 +1492,7 @@ composite {
 text {
 	object {
 		x=659
-		y=261
+		y=246
 		width=20
 		height=14
 	}
@@ -1503,8 +1503,8 @@ text {
 }
 "text entry" {
 	object {
-		x=685
-		y=261
+		x=684
+		y=246
 		width=80
 		height=18
 	}
@@ -1521,7 +1521,7 @@ text {
 text {
 	object {
 		x=659
-		y=280
+		y=266
 		width=20
 		height=14
 	}
@@ -1532,8 +1532,8 @@ text {
 }
 "text entry" {
 	object {
-		x=685
-		y=280
+		x=684
+		y=266
 		width=80
 		height=18
 	}
@@ -1547,22 +1547,10 @@ text {
 		precDefault=3
 	}
 }
-text {
-	object {
-		x=665
-		y=246
-		width=110
-		height=13
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Tweak step size"
-}
 "text update" {
 	object {
-		x=765
-		y=262
+		x=769
+		y=246
 		width=26
 		height=14
 	}
@@ -1576,8 +1564,8 @@ text {
 }
 "text update" {
 	object {
-		x=765
-		y=282
+		x=769
+		y=266
 		width=26
 		height=14
 	}
@@ -1592,7 +1580,7 @@ text {
 "message button" {
 	object {
 		x=701
-		y=200
+		y=196
 		width=40
 		height=16
 	}
@@ -1607,7 +1595,7 @@ text {
 "message button" {
 	object {
 		x=702
-		y=232
+		y=228
 		width=40
 		height=16
 	}
@@ -1622,7 +1610,7 @@ text {
 "message button" {
 	object {
 		x=681
-		y=216
+		y=212
 		width=40
 		height=16
 	}
@@ -1637,7 +1625,7 @@ text {
 "message button" {
 	object {
 		x=722
-		y=216
+		y=212
 		width=40
 		height=16
 	}
@@ -4073,4 +4061,37 @@ composite {
 		calc="A=1"
 		chan="2xfmS1:stepfly.VAL"
 	}
+}
+rectangle {
+	object {
+		x=632
+		y=131
+		width=170
+		height=170
+	}
+	"basic attribute" {
+		clr=37
+		width=2
+	}
+	"dynamic attribute" {
+		vis="if not zero"
+		calc="A"
+		chan="2xfmS1:sample_locked.VAL"
+	}
+}
+"message button" {
+	object {
+		x=686
+		y=286
+		width=80
+		height=14
+	}
+	control {
+		chan="2xfmS1:toggle_lock.VAL"
+		clr=14
+		bclr=35
+	}
+	label="Lock/Unlock"
+	press_msg="6"
+	release_msg="0"
 }

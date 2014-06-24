@@ -26,7 +26,11 @@ callbacks = {
     }
 
 scan_records = ['scanH','scan1','scan2','scan3','FscanH','Fscan1','Fscan2','Fscan3']
-scalers = []
+scalers = [
+        #'scaler1',
+        #'scaler2',
+        #'scaler3',
+        ]
 stage_stacks = {
         'filter_wheel': {
             'angle': ioc_prefix+'m15',

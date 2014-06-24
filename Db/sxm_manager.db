@@ -346,7 +346,7 @@ record(ai, "$(P):sample_z_4") {
 
 record(calc, "$(P):filter_wheel_in") {
   field(SCAN, "1 second")
-  field(CALC, "((A>-50)&(A<-40))")
+  field(CALC, "((A<-50)&(A>-40))")
   field(INPA, "2xfm:m15.VAL")
 }
 
@@ -688,7 +688,7 @@ record(ai, "$(P):align_cfg_det") {
 }
 
 #! Further lines contain data used by VisualDCT
-#! View(1015,938,0.6)
+#! View(773,644,0.6)
 #! Record("$(P):pinhole_x_0",1720,2167,0,1,"$(P):pinhole_x_0")
 #! Record("$(P):pinhole_y_0",1900,2167,0,1,"$(P):pinhole_y_0")
 #! Record("$(P):pinhole_x_1",1720,2287,0,1,"$(P):pinhole_x_1")
@@ -792,4 +792,4 @@ record(ai, "$(P):align_cfg_det") {
 #! Record("$(P):warning2",2300,1335,0,1,"$(P):warning2")
 #! Record("$(P):show_warning1",2480,1222,0,1,"$(P):show_warning1")
 #! Record("$(P):show_warning2",2480,1342,0,1,"$(P):show_warning2")
-#! Record("$(P):align_cfg_det",4740,1462,0,1,"$(P):align_cfg_det")
+#! Record("$(P):align_cfg_det",4560,1442,0,1,"$(P):align_cfg_det")

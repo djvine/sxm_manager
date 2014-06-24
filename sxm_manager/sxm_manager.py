@@ -2,7 +2,7 @@
 import signal
 import sys
 import epics
-from epics.devices import scan, scaler
+from devices import scan, scaler
 from epics.motor import MotorException
 import time
 import multiprocessing as mp
@@ -142,7 +142,43 @@ class SXM_Manager(object):
                 self.scan1.PASM = 2 # Prior Pos
                 self.scan1.PDLY = 0
 
+                """
+                self.scan1.D01PV = '2xfm:scaler3_cts1.A'
+                self.scan1.D02PV = '2xfm:scaler3_cts1.B'
+                self.scan1.D03PV = '2xfm:scaler3_cts1.C'
+                self.scan1.D04PV = '2xfm:scaler3_cts1.D'
+                self.scan1.D05PV = '2xfm:scaler3_cts2.A'
+                self.scan1.D06PV = '2xfm:scaler3_cts2.B'
+                self.scan1.D07PV = '2xfm:scaler3_cts2.C'
+                self.scan1.D08PV = '2xfm:scaler3_cts2.D'
+                self.scan1.D09PV = '2xfm:scaler3_cts3.A'
+                self.scan1.D10PV = '2xfm:scaler3_cts3.B'
+                self.scan1.D11PV = '2xfm:scaler3_cts3.C'
+                self.scan1.D12PV = '2xfm:scaler3_cts3.D'
+                self.scan1.D13PV = '2xfm:scaler3_cts4.A'
+                self.scan1.D14PV = '2xfm:scaler3_cts4.B'
+                self.scan1.D15PV = '2xfm:scaler3_cts4.C'
+                self.scan1.D16PV = '2xfm:scaler3_cts4.D'
+                self.scan1.D17PV = '2xfm:scaler3_cts5.A'
+                self.scan1.D18PV = '2xfm:scaler3_cts5.B'
+                self.scan1.D19PV = '2xfm:scaler3_cts5.C'
+                self.scan1.D20PV = '2xfm:scaler3_cts5.D'
+                self.scan1.D21PV = 'dxpXMAP2xfm3:mca1.R3'
+                self.scan1.D22PV = 'dxpXMAP2xfm3:mca2.R3'
+                self.scan1.D23PV = 'dxpXMAP2xfm3:mca3.R3'
+                self.scan1.D24PV = 'dxpXMAP2xfm3:mca4.R3'
+                self.scan1.D25PV = '2xfm:D1Dmm_raw.VAL'
+                self.scan1.D26PV = 'dxpXMAP2xfm3:mca1.PLTM'
+                self.scan1.D27PV = 'dxpXMAP2xfm3:mca2.PLTM'
+                self.scan1.D28PV = 'dxpXMAP2xfm3:mca3.PLTM'
+                self.scan1.D29PV = 'dxpXMAP2xfm3:mca4.PLTM'
+                self.scan1.D30PV = ''
+                """
+
                 self.scan1.EXSC = 1
+
+            if self.stepfly == 'fly':
+                print('1D Fly Scans not supported')
 
         self.thinking.put(0)
 
@@ -153,10 +189,14 @@ class SXM_Manager(object):
 
             if self.stepfly == 'step':
 
-                self.scan2.BSPV = ''
+                self.scan2.BSPV = '2xfm:STEPuserTran2.PROC'
                 self.scan2.BSCD = 1
-                self.scan2.ASPV = ''
+                self.scan2.ASPV = '2xfm:STEPuserTran3.PROC'
                 self.scan2.ASCD = 1
+                self.scan1.BSPV = ''
+                self.scan1.BSCD = 1
+                self.scan1.ASPV = ''
+                self.scan1.ASCD = 1
 
                 self.scan1.P1SM = 0 #Linear
                 self.scan2.P1SM = 0 #Linear
@@ -168,6 +208,30 @@ class SXM_Manager(object):
                 self.scan2.PDLY = 0
 
                 self.scan2.T1PV = self.scan1.PV('EXSC').pvname
+
+                self.scan2.EXSC = 1
+
+            if self.stepfly == 'fly':
+
+                self.Fscan1.BSPV = '2xfm:FlySetup:OuterBeforeBusy.VAL'
+                self.Fscan1.BSCD = 1
+                self.Fscan1.ASPV = '2xfm:FlySetup:OuterAfterBusy.VAL'
+                self.Fscan1.ASCD = 1
+                self.FscanH.BSPV = '2xfm:FlySetup:InnerBeforeBusy.VAL'
+                self.FscanH.BSCD = 1
+                self.FscanH.ASPV = '2xfm:FlySetup:InnerAfterBusy.VAL'
+                self.FscanH.ASCD = 1
+
+                self.FscanH.P1SM = 2 # Fly
+                self.Fscan1.P1SM = 0 # Linear
+                self.FscanH.P1AR = 0 # Absolute
+                self.Fscan1.P1AR = 1 # Relative
+                self.FscanH.PASM = 0 # Stay
+                self.Fscan1.PASM = 2 # Prior Pos
+                self.FscanH.PDLY = 0
+                self.Fscan1.PDLY = 0
+
+                self.Fscan1.T1PV = self.FscanH.PV('EXSC').pvname
 
                 self.scan2.EXSC = 1
 
@@ -366,8 +430,8 @@ class SXM_Manager(object):
 
     def calculate_fly_ranges(self, **kwargs):
         # Min speed
-        min_vel = epics.caget('2xfmS1:FlySetup:MinBaseVel.VAL')
-        max_vel = epics.caget('2xfmS1:FlySetup:MaxVelocity.VAL')
+        min_vel = epics.caget('2xfm:FlySetup:MinBaseVel.VAL')
+        max_vel = epics.caget('2xfm:FlySetup:MaxVelocity.VAL')
         if min_vel == 0.0:
             return
         if max_vel == 0.0:
