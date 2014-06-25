@@ -4,7 +4,7 @@ from sxm_manager.settings import common
 soft_prefix = '2xfmS1:'
 ioc_prefix = '2xfm:'
 cam_prefix = 'MMPAD3x2:cam1:'
-xfd_prefix = 'dxpXMAP2xfm3'
+xfd_prefix = 'dxpXMAP2xfm3:'
 
 # Syntax: {pvname: function_name}
 # When pvname changes function_name will be called with pvname's value
@@ -82,6 +82,7 @@ scan_axes = {
     4: ['sample.y', 'zp10.z'],
     5: ['tx_det.x', 'tx_det.y'],
     6: ['osa.x', 'osa.y'],
+    8: ['sample.y', 'sample.x'],
     }
 
 lock_state = {

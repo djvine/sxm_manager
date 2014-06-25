@@ -5,8 +5,8 @@ file {
 }
 display {
 	object {
-		x=96
-		y=202
+		x=181
+		y=216
 		width=800
 		height=400
 	}
@@ -1640,7 +1640,7 @@ text {
 composite {
 	object {
 		x=29
-		y=76
+		y=74
 		width=77
 		height=19
 	}
@@ -1649,7 +1649,7 @@ composite {
 		"message button" {
 			object {
 				x=32
-				y=77
+				y=75
 				width=70
 				height=16
 			}
@@ -1664,7 +1664,7 @@ composite {
 		rectangle {
 			object {
 				x=29
-				y=76
+				y=74
 				width=77
 				height=19
 			}
@@ -1678,280 +1678,6 @@ composite {
 				chan="2xfmS1:scan_axes_select.VAL"
 			}
 		}
-	}
-}
-composite {
-	object {
-		x=29
-		y=76
-		width=323
-		height=43
-	}
-	"composite name"=""
-	children {
-		composite {
-			object {
-				x=111
-				y=76
-				width=77
-				height=19
-			}
-			"composite name"=""
-			children {
-				"message button" {
-					object {
-						x=114
-						y=77
-						width=70
-						height=16
-					}
-					control {
-						chan="2xfmS1:scan_axes_select.VAL"
-						clr=14
-						bclr=51
-					}
-					label="Focus XZ20"
-					press_msg="1"
-				}
-				rectangle {
-					object {
-						x=111
-						y=76
-						width=77
-						height=19
-					}
-					"basic attribute" {
-						clr=30
-						width=2
-					}
-					"dynamic attribute" {
-						vis="calc"
-						calc="A=1"
-						chan="2xfmS1:scan_axes_select.VAL"
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=193
-				y=76
-				width=77
-				height=19
-			}
-			"composite name"=""
-			children {
-				"message button" {
-					object {
-						x=196
-						y=77
-						width=70
-						height=16
-					}
-					control {
-						chan="2xfmS1:scan_axes_select.VAL"
-						clr=14
-						bclr=51
-					}
-					label="Focus YZ10"
-					press_msg="4"
-				}
-				rectangle {
-					object {
-						x=193
-						y=76
-						width=77
-						height=19
-					}
-					"basic attribute" {
-						clr=30
-						width=2
-					}
-					"dynamic attribute" {
-						vis="calc"
-						calc="A=4"
-						chan="2xfmS1:scan_axes_select.VAL"
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=275
-				y=76
-				width=77
-				height=19
-			}
-			"composite name"=""
-			children {
-				rectangle {
-					object {
-						x=275
-						y=76
-						width=77
-						height=19
-					}
-					"basic attribute" {
-						clr=30
-						width=2
-					}
-					"dynamic attribute" {
-						vis="calc"
-						calc="A=6"
-						chan="2xfmS1:scan_axes_select.VAL"
-					}
-				}
-				"message button" {
-					object {
-						x=278
-						y=77
-						width=70
-						height=16
-					}
-					control {
-						chan="2xfmS1:scan_axes_select.VAL"
-						clr=14
-						bclr=51
-					}
-					label="OSA XY"
-					press_msg="6"
-				}
-			}
-		}
-		composite {
-			object {
-				x=193
-				y=100
-				width=77
-				height=19
-			}
-			"composite name"=""
-			children {
-				"message button" {
-					object {
-						x=196
-						y=101
-						width=70
-						height=16
-					}
-					control {
-						chan="2xfmS1:scan_axes_select.VAL"
-						clr=14
-						bclr=51
-					}
-					label="CFG XY"
-					press_msg="5"
-				}
-				rectangle {
-					object {
-						x=193
-						y=100
-						width=77
-						height=19
-					}
-					"basic attribute" {
-						clr=30
-						width=2
-					}
-					"dynamic attribute" {
-						vis="calc"
-						calc="A=5"
-						chan="2xfmS1:scan_axes_select.VAL"
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=111
-				y=100
-				width=77
-				height=19
-			}
-			"composite name"=""
-			children {
-				"message button" {
-					object {
-						x=114
-						y=101
-						width=70
-						height=16
-					}
-					control {
-						chan="2xfmS1:scan_axes_select.VAL"
-						clr=14
-						bclr=51
-					}
-					label="Focus XZ10"
-					press_msg="3"
-				}
-				rectangle {
-					object {
-						x=111
-						y=100
-						width=77
-						height=19
-					}
-					"basic attribute" {
-						clr=30
-						width=2
-					}
-					"dynamic attribute" {
-						vis="calc"
-						calc="A=3"
-						chan="2xfmS1:scan_axes_select.VAL"
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=29
-				y=100
-				width=77
-				height=19
-			}
-			"composite name"=""
-			children {
-				"message button" {
-					object {
-						x=32
-						y=101
-						width=70
-						height=16
-					}
-					control {
-						chan="2xfmS1:scan_axes_select.VAL"
-						clr=14
-						bclr=51
-					}
-					label="Focus YZ20"
-					press_msg="2"
-				}
-				rectangle {
-					object {
-						x=29
-						y=100
-						width=77
-						height=19
-					}
-					"basic attribute" {
-						clr=30
-						width=2
-					}
-					"dynamic attribute" {
-						vis="calc"
-						calc="A=2"
-						chan="2xfmS1:scan_axes_select.VAL"
-					}
-				}
-			}
-		}
-	}
-	"dynamic attribute" {
-		vis="calc"
-		calc="A=0"
-		chan="2xfmS1:stepfly.VAL"
 	}
 }
 rectangle {
@@ -3389,9 +3115,9 @@ composite {
 	"dynamic attribute" {
 		vis="calc"
 		calc="A || B || C"
-		chan="2xfm:scan1.EXSC"
-		chanB="2xfm:scan2.EXSC"
-		chanC="2xfm:Fscan1.EXSC"
+		chan="2xfm:scan1.BUSY"
+		chanB="2xfm:scan2.BUSY"
+		chanC="2xfm:Fscan1.BUSY"
 	}
 }
 composite {
@@ -4094,4 +3820,321 @@ rectangle {
 	label="Lock/Unlock"
 	press_msg="6"
 	release_msg="0"
+}
+composite {
+	object {
+		x=29
+		y=74
+		width=323
+		height=43
+	}
+	"composite name"=""
+	children {
+		composite {
+			object {
+				x=111
+				y=74
+				width=77
+				height=19
+			}
+			"composite name"=""
+			children {
+				"message button" {
+					object {
+						x=114
+						y=75
+						width=70
+						height=16
+					}
+					control {
+						chan="2xfmS1:scan_axes_select.VAL"
+						clr=14
+						bclr=51
+					}
+					label="Focus YZ20"
+					press_msg="2"
+				}
+				rectangle {
+					object {
+						x=111
+						y=74
+						width=77
+						height=19
+					}
+					"basic attribute" {
+						clr=30
+						width=2
+					}
+					"dynamic attribute" {
+						vis="calc"
+						calc="A=2"
+						chan="2xfmS1:scan_axes_select.VAL"
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=29
+				y=98
+				width=77
+				height=19
+			}
+			"composite name"=""
+			children {
+				"message button" {
+					object {
+						x=32
+						y=99
+						width=70
+						height=16
+					}
+					control {
+						chan="2xfmS1:scan_axes_select.VAL"
+						clr=14
+						bclr=51
+					}
+					label="Sample YX"
+					press_msg="8"
+				}
+				rectangle {
+					object {
+						x=29
+						y=98
+						width=77
+						height=19
+					}
+					"basic attribute" {
+						clr=30
+						width=2
+					}
+					"dynamic attribute" {
+						vis="calc"
+						calc="A=8"
+						chan="2xfmS1:scan_axes_select.VAL"
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=111
+				y=98
+				width=77
+				height=19
+			}
+			"composite name"=""
+			children {
+				"message button" {
+					object {
+						x=114
+						y=99
+						width=70
+						height=16
+					}
+					control {
+						chan="2xfmS1:scan_axes_select.VAL"
+						clr=14
+						bclr=51
+					}
+					label="Focus XZ20"
+					press_msg="1"
+				}
+				rectangle {
+					object {
+						x=111
+						y=98
+						width=77
+						height=19
+					}
+					"basic attribute" {
+						clr=30
+						width=2
+					}
+					"dynamic attribute" {
+						vis="calc"
+						calc="A=1"
+						chan="2xfmS1:scan_axes_select.VAL"
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=193
+				y=98
+				width=77
+				height=19
+			}
+			"composite name"=""
+			children {
+				"message button" {
+					object {
+						x=196
+						y=99
+						width=70
+						height=16
+					}
+					control {
+						chan="2xfmS1:scan_axes_select.VAL"
+						clr=14
+						bclr=51
+					}
+					label="Focus YZ10"
+					press_msg="4"
+				}
+				rectangle {
+					object {
+						x=193
+						y=98
+						width=77
+						height=19
+					}
+					"basic attribute" {
+						clr=30
+						width=2
+					}
+					"dynamic attribute" {
+						vis="calc"
+						calc="A=4"
+						chan="2xfmS1:scan_axes_select.VAL"
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=193
+				y=74
+				width=77
+				height=19
+			}
+			"composite name"=""
+			children {
+				"message button" {
+					object {
+						x=196
+						y=75
+						width=70
+						height=16
+					}
+					control {
+						chan="2xfmS1:scan_axes_select.VAL"
+						clr=14
+						bclr=51
+					}
+					label="Focus XZ10"
+					press_msg="3"
+				}
+				rectangle {
+					object {
+						x=193
+						y=74
+						width=77
+						height=19
+					}
+					"basic attribute" {
+						clr=30
+						width=2
+					}
+					"dynamic attribute" {
+						vis="calc"
+						calc="A=3"
+						chan="2xfmS1:scan_axes_select.VAL"
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=275
+				y=74
+				width=77
+				height=19
+			}
+			"composite name"=""
+			children {
+				"message button" {
+					object {
+						x=278
+						y=75
+						width=70
+						height=16
+					}
+					control {
+						chan="2xfmS1:scan_axes_select.VAL"
+						clr=14
+						bclr=51
+					}
+					label="CFG XY"
+					press_msg="5"
+				}
+				rectangle {
+					object {
+						x=275
+						y=74
+						width=77
+						height=19
+					}
+					"basic attribute" {
+						clr=30
+						width=2
+					}
+					"dynamic attribute" {
+						vis="calc"
+						calc="A=5"
+						chan="2xfmS1:scan_axes_select.VAL"
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=275
+				y=98
+				width=77
+				height=19
+			}
+			"composite name"=""
+			children {
+				rectangle {
+					object {
+						x=275
+						y=98
+						width=77
+						height=19
+					}
+					"basic attribute" {
+						clr=30
+						width=2
+					}
+					"dynamic attribute" {
+						vis="calc"
+						calc="A=6"
+						chan="2xfmS1:scan_axes_select.VAL"
+					}
+				}
+				"message button" {
+					object {
+						x=278
+						y=99
+						width=70
+						height=16
+					}
+					control {
+						chan="2xfmS1:scan_axes_select.VAL"
+						clr=14
+						bclr=51
+					}
+					label="OSA XY"
+					press_msg="6"
+				}
+			}
+		}
+	}
+	"dynamic attribute" {
+		vis="calc"
+		calc="A=0"
+		chan="2xfmS1:stepfly.VAL"
+	}
 }

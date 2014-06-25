@@ -33,6 +33,11 @@ class StageStack(object):
 class SXM_Manager(object):
 
     def __init__(self, task_queue):
+
+        # To avoid callbacks running on startup they must be 'enabled'
+        # by adding them to this list on the first change.
+        self.enabled_callbacks = []
+
         self.task_queue = task_queue
 
         self.soft_prefix = cfg.soft_prefix
@@ -105,7 +110,10 @@ class SXM_Manager(object):
                 break
             else:
                 pvname, value = next_task
-                getattr(self, self.callbacks[pvname])(pvname=pvname, value=value)
+                if pvname in self.enabled_callbacks:
+                    getattr(self, self.callbacks[pvname])(pvname=pvname, value=value)
+                else:
+                    self.enabled_callbacks.append(pvname)
                 self.task_queue.task_done()
         return
 
@@ -142,38 +150,8 @@ class SXM_Manager(object):
                 self.scan1.PASM = 2 # Prior Pos
                 self.scan1.PDLY = 0
 
-                """
-                self.scan1.D01PV = '2xfm:scaler3_cts1.A'
-                self.scan1.D02PV = '2xfm:scaler3_cts1.B'
-                self.scan1.D03PV = '2xfm:scaler3_cts1.C'
-                self.scan1.D04PV = '2xfm:scaler3_cts1.D'
-                self.scan1.D05PV = '2xfm:scaler3_cts2.A'
-                self.scan1.D06PV = '2xfm:scaler3_cts2.B'
-                self.scan1.D07PV = '2xfm:scaler3_cts2.C'
-                self.scan1.D08PV = '2xfm:scaler3_cts2.D'
-                self.scan1.D09PV = '2xfm:scaler3_cts3.A'
-                self.scan1.D10PV = '2xfm:scaler3_cts3.B'
-                self.scan1.D11PV = '2xfm:scaler3_cts3.C'
-                self.scan1.D12PV = '2xfm:scaler3_cts3.D'
-                self.scan1.D13PV = '2xfm:scaler3_cts4.A'
-                self.scan1.D14PV = '2xfm:scaler3_cts4.B'
-                self.scan1.D15PV = '2xfm:scaler3_cts4.C'
-                self.scan1.D16PV = '2xfm:scaler3_cts4.D'
-                self.scan1.D17PV = '2xfm:scaler3_cts5.A'
-                self.scan1.D18PV = '2xfm:scaler3_cts5.B'
-                self.scan1.D19PV = '2xfm:scaler3_cts5.C'
-                self.scan1.D20PV = '2xfm:scaler3_cts5.D'
-                self.scan1.D21PV = 'dxpXMAP2xfm3:mca1.R3'
-                self.scan1.D22PV = 'dxpXMAP2xfm3:mca2.R3'
-                self.scan1.D23PV = 'dxpXMAP2xfm3:mca3.R3'
-                self.scan1.D24PV = 'dxpXMAP2xfm3:mca4.R3'
-                self.scan1.D25PV = '2xfm:D1Dmm_raw.VAL'
-                self.scan1.D26PV = 'dxpXMAP2xfm3:mca1.PLTM'
-                self.scan1.D27PV = 'dxpXMAP2xfm3:mca2.PLTM'
-                self.scan1.D28PV = 'dxpXMAP2xfm3:mca3.PLTM'
-                self.scan1.D29PV = 'dxpXMAP2xfm3:mca4.PLTM'
-                self.scan1.D30PV = ''
-                """
+                if self.scan1.P1PV == '2xfm:m24.VAL':
+                    self.scan1.P1WD = -1*abs(self.scan1.P1WD)
 
                 self.scan1.EXSC = 1
 
@@ -189,9 +167,9 @@ class SXM_Manager(object):
 
             if self.stepfly == 'step':
 
-                self.scan2.BSPV = '2xfm:STEPuserTran2.PROC'
+                #self.scan2.BSPV = '2xfm:STEPuserTran2.PROC'
                 self.scan2.BSCD = 1
-                self.scan2.ASPV = '2xfm:STEPuserTran3.PROC'
+                #self.scan2.ASPV = '2xfm:STEPuserTran3.PROC'
                 self.scan2.ASCD = 1
                 self.scan1.BSPV = ''
                 self.scan1.BSCD = 1
@@ -206,6 +184,9 @@ class SXM_Manager(object):
                 self.scan2.PASM = 2 # Prior Pos
                 self.scan1.PDLY = 0
                 self.scan2.PDLY = 0
+
+                if self.scan1.P1PV == '2xfm:m24.VAL':
+                    self.scan1.P1WD = -1*abs(self.scan1.P1WD)
 
                 self.scan2.T1PV = self.scan1.PV('EXSC').pvname
 
@@ -264,19 +245,25 @@ class SXM_Manager(object):
         x_stage, x_axis = x_positioner.split('.')
         y_stage, y_axis = y_positioner.split('.')
 
-        if self.stepfly == 'step':
-            self.scan1.P1PV = getattr(getattr(self, x_stage), x_axis).PV('VAL').pvname
-            self.scan2.P1PV = getattr(getattr(self, y_stage), y_axis).PV('VAL').pvname
-        else: #Fly
-            self.FscanH.P1PV = getattr(getattr(self, x_stage), x_axis).PV('VAL').pvname
-            self.Fscan1.P1PV = getattr(getattr(self, y_stage), y_axis).PV('VAL').pvname
-
         try:
-            self.scan_axis_name_1.put(getattr(getattr(self, x_stage), x_axis).DESC)
-            self.scan_axis_name_2.put(getattr(getattr(self, y_stage), y_axis).DESC)
+            if self.stepfly == 'step':
+                self.scan1.P1PV = getattr(getattr(self, x_stage), x_axis).PV('VAL').pvname
+                self.scan2.P1PV = getattr(getattr(self, y_stage), y_axis).PV('VAL').pvname
+                self.scan_axis_name_1.put(getattr(getattr(self, x_stage), x_axis).DESC)
+                self.scan_axis_name_2.put(getattr(getattr(self, y_stage), y_axis).DESC)
+            else: #Fly
+                if value==0:
+                    self.FscanH.P1PV = '2xfm:userCalc10.A'
+                    self.scan_axis_name_1.put('Sample X')
+                else:
+                    self.FscanH.P1PV = getattr(getattr(self, x_stage), x_axis).PV('VAL').pvname
+                    self.scan_axis_name_1.put(getattr(getattr(self, x_stage), x_axis).DESC)
+                self.Fscan1.P1PV = getattr(getattr(self, y_stage), y_axis).PV('VAL').pvname
+                self.scan_axis_name_2.put(getattr(getattr(self, y_stage), y_axis).DESC)
         except:
             self.scan_axis_name_1.put('X Positioner')
             self.scan_axis_name_2.put('Y Positioner')
+            raise
 
         self.thinking.put(0)
 
@@ -318,11 +305,17 @@ class SXM_Manager(object):
                 print("Couldn't set dwell time for {:s}.".format(sc))
                 pass
 
-        # Send dwell to the fluorescence detector
-        pass
+        # Send dtwell to the fluorescence detector
+        try:
+            epics.caput(cfg.xfd_prefix+'dxp1:ElapsedRealTime', value, timeout=0.1)
+        except:
+            pass
 
         # Send dwell to the ptycho camera
-        pass
+        try:
+            epics.caput(cfg.cam_prefix+'AcquireTime', value, timeout=0.1)
+        except:
+            pass
 
         self.update_time_estimate()
 
@@ -437,8 +430,8 @@ class SXM_Manager(object):
         if max_vel == 0.0:
             return
         dwell = self.c_pvs[self.soft_prefix+'dwell.VAL'].get()/1e3
-        step = self.FscanH.PV('P1SI').get()
-        width = self.FscanH.PV('P1WD').get()
+        step = abs(self.FscanH.PV('P1SI').get())
+        width = abs(self.FscanH.PV('P1WD').get())
         npts = self.FscanH.PV('NPTS').get()
 
         if np.mod(step/0.0001, 1.0)>0.0:
