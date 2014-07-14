@@ -687,8 +687,96 @@ record(ai, "$(P):align_cfg_det") {
   field(VAL, "0")
 }
 
+record(calcout, "$(P):pinhole_in0") {
+  field(SCAN, "1 second")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(CALC, "((A=C)&(B=D))")
+  field(INPA, "2xfm:m9.VAL PP")
+  field(INPB, "2xfm:m10.VAL PP")
+  field(INPC, "2xfmS1:pinhole_x_0.VAL PP")
+  field(INPD, "2xfmS1:pinhole_y_0.VAL PP")
+}
+
+record(calcout, "$(P):pinhole_in1") {
+  field(SCAN, "1 second")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(CALC, "((A=C)&(B=D))")
+  field(INPA, "2xfm:m9.VAL PP")
+  field(INPB, "2xfm:m10.VAL PP")
+  field(INPC, "2xfmS1:pinhole_x_1.VAL PP")
+  field(INPD, "2xfmS1:pinhole_y_1.VAL PP")
+}
+
+record(calcout, "$(P):pinhole_in2") {
+  field(SCAN, "1 second")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(CALC, "((A=C)&(B=D))")
+  field(INPA, "2xfm:m9.VAL PP")
+  field(INPB, "2xfm:m10.VAL PP")
+  field(INPC, "2xfmS1:pinhole_x_2.VAL PP")
+  field(INPD, "2xfmS1:pinhole_y_2.VAL PP")
+}
+
+record(calcout, "$(P):pinhole_in3") {
+  field(SCAN, "1 second")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(CALC, "((A=C)&(B=D))")
+  field(INPA, "2xfm:m9.VAL PP")
+  field(INPB, "2xfm:m10.VAL PP")
+  field(INPC, "2xfmS1:pinhole_x_3.VAL PP")
+  field(INPD, "2xfmS1:pinhole_y_3.VAL PP")
+}
+
+record(calcout, "$(P):pinhole_in4") {
+  field(SCAN, "1 second")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(CALC, "((A=C)&(B=D))")
+  field(INPA, "2xfm:m9.VAL PP")
+  field(INPB, "2xfm:m10.VAL PP")
+  field(INPC, "2xfmS1:pinhole_x_4.VAL PP")
+  field(INPD, "2xfmS1:pinhole_y_4.VAL PP")
+}
+
+record(calcout, "$(P):pinhole_in5") {
+  field(SCAN, "1 second")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(CALC, "((A=C)&(B=D))")
+  field(INPA, "2xfm:m9.VAL PP")
+  field(INPB, "2xfm:m10.VAL PP")
+  field(INPC, "2xfmS1:pinhole_x_5.VAL PP")
+  field(INPD, "2xfmS1:pinhole_y_5.VAL PP")
+}
+
+record(calcout, "$(P):pinhole_in6") {
+  field(SCAN, "1 second")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(CALC, "((A=C)&(B=D))")
+  field(INPA, "2xfm:m9.VAL PP")
+  field(INPB, "2xfm:m10.VAL PP")
+  field(INPC, "2xfmS1:pinhole_x_6.VAL PP")
+  field(INPD, "2xfmS1:pinhole_y_6.VAL PP")
+}
+
+record(calcout, "$(P):pinhole_in7") {
+  field(SCAN, "1 second")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(CALC, "((A=C)&(B=D))")
+  field(INPA, "2xfm:m9.VAL PP")
+  field(INPB, "2xfm:m10.VAL PP")
+  field(INPC, "2xfmS1:pinhole_x_7.VAL PP")
+  field(INPD, "2xfmS1:pinhole_y_7.VAL PP")
+}
+
 #! Further lines contain data used by VisualDCT
-#! View(773,644,0.6)
+#! View(504,1087,0.6)
 #! Record("$(P):pinhole_x_0",1720,2167,0,1,"$(P):pinhole_x_0")
 #! Record("$(P):pinhole_y_0",1900,2167,0,1,"$(P):pinhole_y_0")
 #! Record("$(P):pinhole_x_1",1720,2287,0,1,"$(P):pinhole_x_1")
@@ -793,3 +881,11 @@ record(ai, "$(P):align_cfg_det") {
 #! Record("$(P):show_warning1",2480,1222,0,1,"$(P):show_warning1")
 #! Record("$(P):show_warning2",2480,1342,0,1,"$(P):show_warning2")
 #! Record("$(P):align_cfg_det",4560,1442,0,1,"$(P):align_cfg_det")
+#! Record("$(P):pinhole_in0",1360,2009,0,1,"$(P):pinhole_in0")
+#! Record("$(P):pinhole_in1",1540,2009,0,1,"$(P):pinhole_in1")
+#! Record("$(P):pinhole_in2",1360,2189,0,1,"$(P):pinhole_in2")
+#! Record("$(P):pinhole_in3",1540,2189,0,1,"$(P):pinhole_in3")
+#! Record("$(P):pinhole_in4",1360,2369,0,1,"$(P):pinhole_in4")
+#! Record("$(P):pinhole_in5",1540,2369,0,1,"$(P):pinhole_in5")
+#! Record("$(P):pinhole_in6",1360,2549,0,1,"$(P):pinhole_in6")
+#! Record("$(P):pinhole_in7",1540,2549,0,1,"$(P):pinhole_in7")
