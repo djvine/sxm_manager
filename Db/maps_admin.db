@@ -3,7 +3,7 @@
 #! DBDEND
 
 
-record(mbbo, "$(P):test") {
+record(mbbo, "$(P):element_1") {
   field(SCAN, "Passive")
   field(DTYP, "Soft Channel")
   field(VAL, "0")
@@ -11,8 +11,1065 @@ record(mbbo, "$(P):test") {
   field(NOBT, "1")
   field(ZRVL, "0")
   field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_2") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_3") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_4") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_5") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_6") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_7") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_8") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_9") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_10") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_11") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_12") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_13") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_14") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_15") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_16") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_17") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_18") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_19") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_20") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_21") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_22") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_23") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_24") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_25") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_26") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_27") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_28") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_29") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_30") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_31") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_32") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_33") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_34") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_35") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_36") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_37") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_38") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_39") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_40") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_41") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_42") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_43") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_44") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_45") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_46") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_47") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_48") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_49") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_50") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_51") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_52") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_53") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_54") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_55") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_56") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_57") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_58") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_59") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_60") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_61") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_62") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_63") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_64") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_65") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_66") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_67") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_68") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_69") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_70") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_71") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_72") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_73") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_74") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_75") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_76") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_77") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_78") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_79") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(mbbo, "$(P):element_80") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+  field(OMSL, "supervisory")
+  field(NOBT, "1")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(ZRST, "No")
+  field(ONST, "Yes")
+}
+
+record(bo, "$(P):generate_config") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+}
+
+record(bo, "$(P):reprocess_all") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+}
+
+record(stringout, "$(P):user_string") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "Commissioning")
+}
+
+record(stringout, "$(P):run_string") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "Commissioning")
 }
 
 #! Further lines contain data used by VisualDCT
-#! View(2000,2115,1.0)
-#! Record("$(P):test",2360,2146,0,1,"$(P):test")
+#! View(326,784,0.6)
+#! Record("$(P):element_1",20,15,0,0,"$(P):element_1")
+#! Record("$(P):element_2",20,195,0,1,"$(P):element_2")
+#! Record("$(P):element_3",20,395,0,1,"$(P):element_3")
+#! Record("$(P):element_4",20,595,0,1,"$(P):element_4")
+#! Record("$(P):element_5",20,795,0,1,"$(P):element_5")
+#! Record("$(P):element_6",20,995,0,1,"$(P):element_6")
+#! Record("$(P):element_7",20,1195,0,1,"$(P):element_7")
+#! Record("$(P):element_8",20,1395,0,1,"$(P):element_8")
+#! Record("$(P):element_9",20,1595,0,1,"$(P):element_9")
+#! Record("$(P):element_10",20,1795,0,1,"$(P):element_10")
+#! Record("$(P):element_11",260,15,0,1,"$(P):element_11")
+#! Record("$(P):element_12",200,195,0,1,"$(P):element_12")
+#! Record("$(P):element_13",200,395,0,1,"$(P):element_13")
+#! Record("$(P):element_14",200,595,0,1,"$(P):element_14")
+#! Record("$(P):element_15",200,795,0,1,"$(P):element_15")
+#! Record("$(P):element_16",200,995,0,1,"$(P):element_16")
+#! Record("$(P):element_17",200,1195,0,1,"$(P):element_17")
+#! Record("$(P):element_18",200,1395,0,1,"$(P):element_18")
+#! Record("$(P):element_19",200,1595,0,1,"$(P):element_19")
+#! Record("$(P):element_20",200,1795,0,1,"$(P):element_20")
+#! Record("$(P):element_21",500,15,0,1,"$(P):element_21")
+#! Record("$(P):element_22",380,195,0,1,"$(P):element_22")
+#! Record("$(P):element_23",380,395,0,1,"$(P):element_23")
+#! Record("$(P):element_24",380,595,0,1,"$(P):element_24")
+#! Record("$(P):element_25",380,795,0,1,"$(P):element_25")
+#! Record("$(P):element_26",380,995,0,1,"$(P):element_26")
+#! Record("$(P):element_27",380,1195,0,1,"$(P):element_27")
+#! Record("$(P):element_28",380,1395,0,1,"$(P):element_28")
+#! Record("$(P):element_29",380,1595,0,1,"$(P):element_29")
+#! Record("$(P):element_30",380,1795,0,1,"$(P):element_30")
+#! Record("$(P):element_31",740,15,0,1,"$(P):element_31")
+#! Record("$(P):element_32",560,195,0,1,"$(P):element_32")
+#! Record("$(P):element_33",560,395,0,1,"$(P):element_33")
+#! Record("$(P):element_34",560,595,0,1,"$(P):element_34")
+#! Record("$(P):element_35",560,795,0,1,"$(P):element_35")
+#! Record("$(P):element_36",560,995,0,1,"$(P):element_36")
+#! Record("$(P):element_37",560,1195,0,1,"$(P):element_37")
+#! Record("$(P):element_38",560,1395,0,1,"$(P):element_38")
+#! Record("$(P):element_39",560,1595,0,1,"$(P):element_39")
+#! Record("$(P):element_40",560,1795,0,1,"$(P):element_40")
+#! Record("$(P):element_41",980,15,0,1,"$(P):element_41")
+#! Record("$(P):element_42",740,195,0,1,"$(P):element_42")
+#! Record("$(P):element_43",740,395,0,1,"$(P):element_43")
+#! Record("$(P):element_44",740,595,0,1,"$(P):element_44")
+#! Record("$(P):element_45",740,795,0,1,"$(P):element_45")
+#! Record("$(P):element_46",740,995,0,1,"$(P):element_46")
+#! Record("$(P):element_47",740,1195,0,1,"$(P):element_47")
+#! Record("$(P):element_48",740,1395,0,1,"$(P):element_48")
+#! Record("$(P):element_49",740,1595,0,1,"$(P):element_49")
+#! Record("$(P):element_50",740,1795,0,1,"$(P):element_50")
+#! Record("$(P):element_51",1220,15,0,1,"$(P):element_51")
+#! Record("$(P):element_52",920,195,0,1,"$(P):element_52")
+#! Record("$(P):element_53",920,395,0,1,"$(P):element_53")
+#! Record("$(P):element_54",920,595,0,1,"$(P):element_54")
+#! Record("$(P):element_55",920,795,0,1,"$(P):element_55")
+#! Record("$(P):element_56",920,995,0,1,"$(P):element_56")
+#! Record("$(P):element_57",920,1195,0,1,"$(P):element_57")
+#! Record("$(P):element_58",920,1395,0,1,"$(P):element_58")
+#! Record("$(P):element_59",920,1595,0,1,"$(P):element_59")
+#! Record("$(P):element_60",920,1795,0,1,"$(P):element_60")
+#! Record("$(P):element_61",1460,15,0,1,"$(P):element_61")
+#! Record("$(P):element_62",1100,195,0,1,"$(P):element_62")
+#! Record("$(P):element_63",1100,395,0,1,"$(P):element_63")
+#! Record("$(P):element_64",1100,595,0,1,"$(P):element_64")
+#! Record("$(P):element_65",1100,795,0,1,"$(P):element_65")
+#! Record("$(P):element_66",1100,995,0,1,"$(P):element_66")
+#! Record("$(P):element_67",1100,1195,0,1,"$(P):element_67")
+#! Record("$(P):element_68",1100,1395,0,1,"$(P):element_68")
+#! Record("$(P):element_69",1100,1595,0,1,"$(P):element_69")
+#! Record("$(P):element_70",1100,1795,0,1,"$(P):element_70")
+#! Record("$(P):element_71",1700,15,0,1,"$(P):element_71")
+#! Record("$(P):element_72",1280,195,0,1,"$(P):element_72")
+#! Record("$(P):element_73",1280,395,0,1,"$(P):element_73")
+#! Record("$(P):element_74",1280,595,0,1,"$(P):element_74")
+#! Record("$(P):element_75",1280,795,0,1,"$(P):element_75")
+#! Record("$(P):element_76",1280,995,0,1,"$(P):element_76")
+#! Record("$(P):element_77",1280,1195,0,1,"$(P):element_77")
+#! Record("$(P):element_78",1280,1395,0,1,"$(P):element_78")
+#! Record("$(P):element_79",1280,1595,0,1,"$(P):element_79")
+#! Record("$(P):element_80",1280,1795,0,1,"$(P):element_80")
+#! Record("$(P):generate_config",1560,1502,0,1,"$(P):generate_config")
+#! Record("$(P):reprocess_all",1740,1502,0,1,"$(P):reprocess_all")
+#! Record("$(P):user_string",1560,1622,0,1,"$(P):user_string")
+#! Record("$(P):run_string",1740,1622,0,1,"$(P):run_string")
