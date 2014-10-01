@@ -253,7 +253,7 @@ class SXM_Manager(object):
                 self.scan_axis_name_2.put(getattr(getattr(self, y_stage), y_axis).DESC)
             else: #Fly
                 if value==0:
-                    self.FscanH.P1PV = '2xfm:userCalc10.A'
+                    self.FscanH.P1PV = '2xfm:FLYuserCalc10.A'
                     self.scan_axis_name_1.put('Sample X')
                 else:
                     self.FscanH.P1PV = getattr(getattr(self, x_stage), x_axis).PV('VAL').pvname
