@@ -253,7 +253,7 @@ class SXM_Manager(object):
                 self.scan_axis_name_2.put(getattr(getattr(self, y_stage), y_axis).DESC)
             else: #Fly
                 if value==0:
-                    self.FscanH.P1PV = '2xfm:userCalc10.A'
+                    self.FscanH.P1PV = '2xfm:FLYuserCalc10.A'
                     self.scan_axis_name_1.put('Sample X')
                 else:
                     self.FscanH.P1PV = getattr(getattr(self, x_stage), x_axis).PV('VAL').pvname
@@ -296,26 +296,15 @@ class SXM_Manager(object):
                     epics.caput(self.soft_prefix+'{:s}_{:s}_{:s}.VAL'.format(stack, axis, location), getattr(getattr(self, stack), axis).VAL )
 
     def update_dwell(self, pvname, value, **kwargs):
-        value /= 1e3 # ms to s
-        # Send dwell to all the scalers
-        for sc in cfg.scalers:
-            try:
-                getattr(self, sc).CountTime(value)
-            except:
-                print("Couldn't set dwell time for {:s}.".format(sc))
-                pass
 
-        # Send dtwell to the fluorescence detector
-        try:
-            epics.caput(cfg.xfd_prefix+'dxp1:ElapsedRealTime', value, timeout=0.1)
+        try:# Set step scan master dwell
+            epics.caput('2xfm:userTran1.P', value/1e3, timeout=0.1)
         except:
-            pass
-
-        # Send dwell to the ptycho camera
-        try:
-            epics.caput(cfg.cam_prefix+'AcquireTime', value, timeout=0.1)
+            print("Couldn't set step scan dwell.")
+        try:# Set fly scan master dwell
+            epics.caput('2xfm:FlySetup:DwellTime.VAL', value, timeout=0.1)
         except:
-            pass
+            print("Couldn't set fly scan dwell.")
 
         self.update_time_estimate()
 
