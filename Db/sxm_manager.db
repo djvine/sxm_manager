@@ -574,9 +574,9 @@ record(calcout, "$(P):zp10_in") {
   field(DTYP, "Soft Channel")
   field(VAL, "0")
   field(CALC, "((A=D)&(B=E)&(C=F))")
-  field(INPA, "2xfm:m17.VAL PP")
-  field(INPB, "2xfm:m22.VAL PP")
-  field(INPC, "2xfm:m20.VAL PP")
+  field(INPA, "2xfm:m30.VAL PP")
+  field(INPB, "2xfm:m12.VAL PP")
+  field(INPC, "2xfm:m29.VAL PP")
   field(INPD, "2xfmS1:zp10_x_in.VAL PP")
   field(INPE, "2xfmS1:zp10_y_in.VAL PP")
   field(INPF, "2xfmS1:zp10_z_in.VAL PP")
@@ -776,7 +776,7 @@ record(calcout, "$(P):pinhole_in7") {
 }
 
 #! Further lines contain data used by VisualDCT
-#! View(504,1087,0.6)
+#! View(520,700,0.6)
 #! Record("$(P):pinhole_x_0",1720,2167,0,1,"$(P):pinhole_x_0")
 #! Record("$(P):pinhole_y_0",1900,2167,0,1,"$(P):pinhole_y_0")
 #! Record("$(P):pinhole_x_1",1720,2287,0,1,"$(P):pinhole_x_1")

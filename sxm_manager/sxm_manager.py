@@ -1,6 +1,9 @@
 #!/usr/bin/python2
 import signal
+import glob
 import sys
+import os
+import shutil
 import epics
 from devices import scan, scaler
 from epics.motor import MotorException
@@ -11,6 +14,7 @@ import numpy as np
 import scipy as sp
 import ipdb
 from settings import xfm as cfg
+from beamon import beamline
 
 class StageStack(object):
 
@@ -45,14 +49,14 @@ class SXM_Manager(object):
         self.xfd_prefix = cfg.xfd_prefix
         self.cam_prefix = cfg.cam_prefix
 
-        self.batch_x_width_pvname = '{:s}B1:scan1_{:d}:Width.VAL'
-        self.batch_x_center_pvname = '{:s}B1:scan1_{:d}:Center.VAL'
-        self.batch_x_npts_pvname = '{:s}B1:scan1_{:d}:NumPts.VAL'
-        self.batch_y_width_pvname = '{:s}B1:scan2_{:d}:Width.VAL'
-        self.batch_y_center_pvname = '{:s}B1:scan2_{:d}:Center.VAL'
-        self.batch_y_npts_pvname = '{:s}B1:scan2_{:d}:NumPts.VAL'
-        self.batch_dwell_pvname = '{:s}B1:scan_{:d}:Dwell.VAL'
-        self.batch_comment_pvname = '{:s}B1:scan_{:d}:Comment.VAL'
+        self.batch_x_width_pvname = '{:s}B1:Scan1_{:d}:Width.VAL'
+        self.batch_x_center_pvname = '{:s}B1:Scan1_{:d}:Center.VAL'
+        self.batch_x_npts_pvname = '{:s}B1:Scan1_{:d}:NumPts.VAL'
+        self.batch_y_width_pvname = '{:s}B1:Scan2_{:d}:Width.VAL'
+        self.batch_y_center_pvname = '{:s}B1:Scan2_{:d}:Center.VAL'
+        self.batch_y_npts_pvname = '{:s}B1:Scan2_{:d}:NumPts.VAL'
+        self.batch_dwell_pvname = '{:s}B1:Scan_{:d}:Dwell.VAL'
+        self.batch_comment_pvname = '{:s}B1:Scan_{:d}:Comment.VAL'
 
         self.callbacks = cfg.callbacks
 
@@ -101,6 +105,8 @@ class SXM_Manager(object):
         for c_pv in self.callbacks.keys():
             self.c_pvs[c_pv] = epics.PV(c_pv, callback=self.on_changes)
 
+	self.c_pvs[self.soft_prefix+'heartbeat.VAL'].put(1-self.c_pvs[self.soft_prefix+'heartbeat.VAL'].get())
+
     def run(self):
         while True:
             next_task = self.task_queue.get()
@@ -123,6 +129,7 @@ class SXM_Manager(object):
     @staticmethod
     def heartbeat_wait(task_queue, pv, value):
         time.sleep(2.5)
+        SXM_Manager.update_maps_status()
         pv.put(1-value)
 
     def toggle_heartbeat(self, pvname, value=None, **kws):
@@ -139,16 +146,6 @@ class SXM_Manager(object):
         if value == 1:
 
             if self.stepfly == 'step':
-
-                self.scan1.BSPV = ''
-                self.scan1.BSCD = 1
-                self.scan1.ASPV = ''
-                self.scan1.ASCD = 1
-
-                self.scan1.P1SM = 0 #Linear
-                self.scan1.P1AR = 1 # Relative
-                self.scan1.PASM = 2 # Prior Pos
-                self.scan1.PDLY = 0
 
                 if self.scan1.P1PV == '2xfm:m24.VAL':
                     self.scan1.P1WD = -1*abs(self.scan1.P1WD)
@@ -167,24 +164,6 @@ class SXM_Manager(object):
 
             if self.stepfly == 'step':
 
-                #self.scan2.BSPV = '2xfm:STEPuserTran2.PROC'
-                self.scan2.BSCD = 1
-                #self.scan2.ASPV = '2xfm:STEPuserTran3.PROC'
-                self.scan2.ASCD = 1
-                self.scan1.BSPV = ''
-                self.scan1.BSCD = 1
-                self.scan1.ASPV = ''
-                self.scan1.ASCD = 1
-
-                self.scan1.P1SM = 0 #Linear
-                self.scan2.P1SM = 0 #Linear
-                self.scan1.P1AR = 1 # Relative
-                self.scan2.P1AR = 1 # Relative
-                self.scan1.PASM = 2 # Prior Pos
-                self.scan2.PASM = 2 # Prior Pos
-                self.scan1.PDLY = 0
-                self.scan2.PDLY = 0
-
                 if self.scan1.P1PV == '2xfm:m24.VAL':
                     self.scan1.P1WD = -1*abs(self.scan1.P1WD)
 
@@ -194,27 +173,9 @@ class SXM_Manager(object):
 
             if self.stepfly == 'fly':
 
-                self.Fscan1.BSPV = '2xfm:FlySetup:OuterBeforeBusy.VAL'
-                self.Fscan1.BSCD = 1
-                self.Fscan1.ASPV = '2xfm:FlySetup:OuterAfterBusy.VAL'
-                self.Fscan1.ASCD = 1
-                self.FscanH.BSPV = '2xfm:FlySetup:InnerBeforeBusy.VAL'
-                self.FscanH.BSCD = 1
-                self.FscanH.ASPV = '2xfm:FlySetup:InnerAfterBusy.VAL'
-                self.FscanH.ASCD = 1
-
-                self.FscanH.P1SM = 2 # Fly
-                self.Fscan1.P1SM = 0 # Linear
-                self.FscanH.P1AR = 0 # Absolute
-                self.Fscan1.P1AR = 1 # Relative
-                self.FscanH.PASM = 0 # Stay
-                self.Fscan1.PASM = 2 # Prior Pos
-                self.FscanH.PDLY = 0
-                self.Fscan1.PDLY = 0
-
                 self.Fscan1.T1PV = self.FscanH.PV('EXSC').pvname
 
-                self.scan2.EXSC = 1
+                self.Fscan1.EXSC = 1
 
         self.thinking.put(0)
 
@@ -296,50 +257,55 @@ class SXM_Manager(object):
                     epics.caput(self.soft_prefix+'{:s}_{:s}_{:s}.VAL'.format(stack, axis, location), getattr(getattr(self, stack), axis).VAL )
 
     def update_dwell(self, pvname, value, **kwargs):
+        # Updating any dwell time (master, step, fly) updates the time estimate
 
-        try:# Set step scan master dwell
-            epics.caput('2xfm:userTran1.P', value/1e3, timeout=0.1)
-        except:
-            print("Couldn't set step scan dwell.")
-        try:# Set fly scan master dwell
-            epics.caput('2xfm:FlySetup:DwellTime.VAL', value, timeout=0.1)
-        except:
-            print("Couldn't set fly scan dwell.")
+        if pvname == self.soft_prefix+'dwell.VAL':
+
+            try:# set step scan master dwell
+                epics.caput('2xfm:userTran1.P', value/1e3, timeout=0.1)
+            except:
+                print("couldn't set step scan dwell.")
+            try:# set fly scan master dwell
+                epics.caput('2xfm:FlySetup:DwellTime.VAL', value, timeout=0.1)
+            except:
+                print("couldn't set fly scan dwell.")
 
         self.update_time_estimate()
 
     def update_time_estimate(self, **kwargs):
         try:
-            dwell = self.c_pvs[self.soft_prefix+'dwell.VAL'].get()/1e3
             if self.stepfly == 'step':
+                dwell = epics.caget('2xfm:userTran1.P', timeout=0.1)
                 n_pts = self.scan1.NPTS
                 n_lines = self.scan2.NPTS
                 oh = cfg.time_estimate_overhead['step']
             elif self.stepfly == 'fly':
+                dwell = epics.caget('2xfm:FlySetup:DwellTime.VAL', timeout=0.1)*1e-3
                 n_pts = self.FscanH.NPTS
                 n_lines = self.Fscan1.NPTS
                 oh = cfg.time_estimate_overhead['fly']
             time_per_line = oh[0]+dwell*n_pts*oh[1]
             time_per_image = oh[2]+time_per_line*n_lines*oh[3]
-            epics.caput(self.soft_prefix+'hr_estimate_line.VAL', np.floor(time_per_line/3600.0))
-            epics.caput(self.soft_prefix+'min_estimate_line.VAL', np.mod(time_per_line, 3600.0)/60.0)
-            epics.caput(self.soft_prefix+'hr_estimate_image.VAL', np.floor(time_per_image/3600.0))
-            epics.caput(self.soft_prefix+'min_estimate_image.VAL', np.mod(time_per_image, 3600.0)/60.0)
+            epics.caput(self.soft_prefix+'hr_estimate_line.VAL', np.floor(time_per_line/3600.0), timeout=0.1)
+            epics.caput(self.soft_prefix+'min_estimate_line.VAL', np.mod(time_per_line, 3600.0)/60.0, timeout=0.1)
+            epics.caput(self.soft_prefix+'hr_estimate_image.VAL', np.floor(time_per_image/3600.0), timeout=0.1)
+            epics.caput(self.soft_prefix+'min_estimate_image.VAL', np.mod(time_per_image, 3600.0)/60.0, timeout=0.1)
         except AttributeError:
-            pass
+            raise
 
         if self.stepfly == 'fly':
             self.calculate_fly_ranges()
 
     def update_time_remaining(self, **kwargs):
         try:
-            dwell = self.c_pvs[self.soft_prefix+'dwell.VAL'].get()/1e3
             if self.stepfly == 'step':
+                dwell = epics.caget('2xfm:userTran1.P', timeout=0.1)
                 n_pts = self.scan1.NPTS
                 n_lines = self.scan2.NPTS
                 c_line = self.scan2.CPT
                 oh = cfg.time_estimate_overhead['step']
             elif self.stepfly == 'fly':
+                dwell = epics.caget('2xfm:FlySetup:DwellTime.VAL', timeout=0.1)*1e-3
                 n_pts = self.FscanH.NPTS
                 n_lines = self.Fscan1.NPTS
                 c_line = self.Fscan1.CPT
@@ -350,24 +316,29 @@ class SXM_Manager(object):
             time_per_image = oh[2]+time_per_line*(n_lines-c_line)*oh[3]
             epics.caput(self.soft_prefix+'hr_remaining.VAL', np.floor(time_per_image/3600.0), timeout=0.1)
             epics.caput(self.soft_prefix+'min_remaining.VAL', np.mod(time_per_image, 3600.0)/60.0, timeout=0.1)
+        except TypeError:
+            # Probably a caget timed out
+            pass
         except AttributeError:
             raise
 
     def alignment_mode(self, value, **kwargs):
+        epics.caput('2xfmS1:alignment_mode_status.VAL', 1)
         if value == 0: # Measurement mode
             # Move OSA in
             self.stage_stack_move(value=5)
             if self.c_pvs[self.soft_prefix+'scan_type_select.VAL'].get() == 0: # CFG
-                self.stage_stack_move(value=13)
+                self.stage_stack_move(value=13, wait=True)
             elif self.c_pvs[self.soft_prefix+'scan_type_select.VAL'].get() == 1: # Ptycho
-                self.stage_stack_move(value=14)
+                self.stage_stack_move(value=14, wait=True)
 
         elif value == 1: # Alignment mode
             # Move OSA out
-            self.stage_stack_move(value=6)
+            self.stage_stack_move(value=6, wait=True)
             # Move CCD in
-            self.stage_stack_move(value=12)
-
+            self.stage_stack_move(value=12, wait=True)
+        epics.caput('2xfmS1:alignment_mode_status.VAL', 0)
+        
     def push_to_batch(self, value, **kwargs):
         if value>0:
             value -= 1
@@ -379,6 +350,7 @@ class SXM_Manager(object):
                     y_center = self.scan2.PV('P1CP').get()
                     y_width = self.scan2.PV('P1WD').get()
                     y_pts = self.scan2.PV('NPTS').get()
+                    dwell = 1e-3*self.c_pvs[self.soft_prefix+'dwell.VAL'].get()
                 elif self.stepfly == 'fly':
                     x_center = self.FscanH.PV('P1CP').get()
                     x_width = self.FscanH.PV('P1WD').get()
@@ -386,26 +358,17 @@ class SXM_Manager(object):
                     y_center = self.Fscan1.PV('P1CP').get()
                     y_width = self.Fscan1.PV('P1WD').get()
                     y_pts = self.Fscan1.PV('NPTS').get()
+                    dwell = self.c_pvs[self.ioc_prefix+':FlySetup:DwellTime.VAL'].get()
                 comment = epics.caget('2xfm:userStringCalc10.DD')
-                dwell = self.c_pvs[self.soft_prefix+'dwell.VAL'].get()
 
-                print(self.batch_x_center_pvname.format(self.soft_prefix, value), x_center)
-                print(self.batch_x_width_pvname.format(self.soft_prefix, value), x_width)
-                print(self.batch_x_npts_pvname.format(self.soft_prefix, value), x_pts)
-                print(self.batch_y_center_pvname.format(self.soft_prefix, value), y_center)
-                print(self.batch_y_width_pvname.format(self.soft_prefix, value), y_width)
-                print(self.batch_y_npts_pvname.format(self.soft_prefix, value), y_pts)
-                print(self.batch_comment_pvname.format(self.soft_prefix, value), comment)
-                print(self.batch_dwell_pvname.format(self.soft_prefix, value), dwell)
-
-                #epics.caput(self.batch_x_center_pvname.format(self.soft_prefix, value), x_center)
-                #epics.caput(self.batch_x_width_pvname.format(self.soft_prefix, value), x_width)
-                #epics.caput(self.batch_x_npts_pvname.format(self.soft_prefix, value), x_pts)
-                #epics.caput(self.batch_y_center_pvname.format(self.soft_prefix, value), y_center)
-                #epics.caput(self.batch_y_width_pvname.format(self.soft_prefix, value), y_width)
-                #epics.caput(self.batch_y_npts_pvname.format(self.soft_prefix, value), y_pts)
-                #epics.caput(self.batch_comment_pvname.format(self.soft_prefix, value), comment)
-                #epics.caput(self.batch_dwell_pvname.format(self.soft_prefix, value), dwell)
+                epics.caput(self.batch_x_center_pvname.format(self.ioc_prefix, value), x_center)
+                epics.caput(self.batch_x_width_pvname.format(self.ioc_prefix, value), x_width)
+                epics.caput(self.batch_x_npts_pvname.format(self.ioc_prefix, value), x_pts)
+                epics.caput(self.batch_y_center_pvname.format(self.ioc_prefix, value), y_center)
+                epics.caput(self.batch_y_width_pvname.format(self.ioc_prefix, value), y_width)
+                epics.caput(self.batch_y_npts_pvname.format(self.ioc_prefix, value), y_pts)
+                epics.caput(self.batch_comment_pvname.format(self.ioc_prefix, value), comment)
+                epics.caput(self.batch_dwell_pvname.format(self.ioc_prefix, value), dwell)
 
             except:
                 raise
@@ -442,48 +405,199 @@ class SXM_Manager(object):
         except:
             raise
 
+    def generate_config(self, pvname, value, **kwargs):
+        if value==1:
+            user = epics.caget('2xfmS1:user_string.VAL')
+            run = epics.caget('2xfmS1:run_string.VAL')
+	
+            beamline.generate_config(user, run)
+
+    def maps_process_now(self, pvname, value, **kwargs):
+        if value==1:
+            user = epics.caget('2xfmS1:user_string.VAL')
+            run = epics.caget('2xfmS1:run_string.VAL')
+
+            fn_livejob = '/mnt/xfm0/data/2ide/{run:s}/{user:s}/livejob_{run:s}_2ide_{user:s}.txt'.format(**{'user':user, 'run':run})
+
+            if os.path.isfile(fn_livejob):
+                shutil.move(fn_livejob, '/mnt/xfm0/data/jobs')
+
+    @staticmethod
+    def update_maps_status():
+        user = epics.caget('2xfmS1:user_string.VAL')
+        run = epics.caget('2xfmS1:run_string.VAL')
+        machines = {0: 'XFM3', 1: 'XFM3B', 2: 'XFM4', 3: 'XFM4B', 4: 'XFM5', 5: 'XFM5B', 6: 'XFM6', 7: 'XFM6B'}
+
+        complete_livejob = '/mnt/xfm0/data/2ide/{run:s}/{user:s}/livejob_{run:s}_2ide_{user:s}.txt'.format(**{'user':user, 'run':run})
+        waiting_livejob = '/mnt/xfm0/data/jobs/livejob_{run:s}_2ide_{user:s}.txt'.format(**{'user':user, 'run':run})
+        processing_livejob = '/mnt/xfm0/data/jobs/processing/livejob_{run:s}_2ide_{user:s}.txt'.format(**{'user':user, 'run':run})
+        processing_livejob_machine = '/mnt/xfm0/data/jobs/{machine:s}/livejob_{run:s}_2ide_{user:s}.txt'.format(**{'user':user, 'run':run, 'machine': '{:s}'})
+        message = 'Processing update error'
+
+        if os.path.exists(complete_livejob):
+            message = 'MAPS Processing completed'
+            epics.caput('2xfmS1:maps_processing_status.VAL', 0)
+        elif os.path.exists(waiting_livejob):
+            message = 'MAPS job in queue'
+            epics.caput('2xfmS1:maps_processing_status.VAL', 1)
+        elif os.path.exists(processing_livejob) or \
+            any([os.path.exists(processing_livejob_machine.format(val.lower())) for key, val in machines.iteritems()]):
+            message = "MAPS processing in progress"
+            epics.caput('2xfmS1:maps_processing_status.VAL', 1)
+
+        epics.caput('2xfmS1:maps_status_1.VAL', message)
+        max_string_length = 35
+        idle_message = '{:s}: IDLE'
+        processing_message = '{:s}: {:s} {:s} {:s}'
+        xfm0_jobs = '/mnt/xfm0/data/jobs/'
+        for i in range(8):
+            if os.path.exists(xfm0_jobs+'status_{:s}_idle.txt'.format(machines[i].lower())):
+                epics.caput('2xfmS1:maps_status_{:d}.VAL'.format(i+2), idle_message.format(machines[i]), timeout=0.1)
+            elif os.path.exists(xfm0_jobs+'status_{:s}_working.txt'.format(machines[i].lower())):
+                try:
+                    with open(xfm0_jobs+'status_{:s}_working.txt'.format(machines[i].lower()), 'r') as f:
+                        lines = f.readlines()
+                        proc_user = lines[1].split('_')[3]
+                        if proc_user.find('.')>-1:
+                            proc_user = proc_user.split('.')[0]
+                        proc_run = lines[1].split('_')[1]
+                        proc_beamline = lines[1].split('_')[2]
+                        epics.caput('2xfmS1:maps_status_{:d}.VAL'.format(i+2), processing_message.format(machines[i], proc_beamline, proc_run, proc_user)[:max_string_length], timeout=0.1)
+                except IOError:
+                    print('Could not open {:s}'.format(xfm0_jobs+'status_{:s}_working.txt'.format(machines[i].lower())))
+                except IndexError:
+                    print('Caught an index error while parsing: status_{:s}_working.txt'.format(machines[i].lower()))
+                except:
+                    raise
+
+    def maps_reprocess_all(self, pvname, value, **kwargs):
+
+       if value == 1: 
+            user = epics.caget('2xfmS1:user_string.VAL')
+            run = epics.caget('2xfmS1:run_string.VAL')
+
+            if os.path.exists('/mnt/xfm0/data/2ide/{run:s}/{user:s}/output/local_done'.format(**{'user':user, 'run':run})):
+                fn_mda_done = '/mnt/xfm0/data/2ide/{run:s}/{user:s}/output/local_done/*.txt'.format(**{'user':user, 'run':run})
+        
+                files = glob.glob(fn_mda_done)
+
+                for file in files:
+                    shutil.copy(file, '/tmp')
+                    os.remove(file)
+                   
+
+            self.maps_process_now(pvname=None, value=1)
+        
+    def scan_ends_process_now(self, pvname, value, **kwargs):
+        
+        if value==0:
+            self.maps_process_now(pvname=None, value=1)
+
+    def generate_user_dirs(self, pvname, value, **kwargs):
+        if value==1:
+            user = epics.caget('2xfmS1:user_string.VAL')
+            beamline.setup_user_dirs(user)
+        elif value==2:
+            user = epics.caget('2xfmS1:user_string.VAL')
+            beamline.setup_user_dirs_save_data_location(user)
+
+    def update_user(self, pvname, value, **kwargs):
+        if value==1:
+            epics.caput('2xfmS1:user_string.VAL', beamline.schedule.get_pi().lower())
+            epics.caput('2xfmS1:run_string.VAL', beamline.get_run_name_from_schedule())
+
+    def take_standards(self, pvname, value, **kwargs):
+        if value==1:
+            old_comment = epics.caget('2xfm:userStringCalc10.CC')
+            epics.caput('2xfm:userStringCalc10.CC', 'axo_std')
+            self.sample.x.move(0, wait=True)
+            self.sample.y.move(-2.55, wait=True)
+            self.sample.z.move(0.5, wait=True)
+
+            # Step scan
+            epics.caput(self.soft_prefix+'stepfly.VAL', 0)
+            epics.caput(self.soft_prefix+'scan_axes_select.VAL',0)
+            epics.caput(self.ioc_prefix+'userTran1.P', 1)
+
+            self.scan1.P1WD = -0.06
+            self.scan1.NPTS = 61
+            self.scan2.P1WD = 0.02
+            self.scan2.NPTS = 3
+
+            done = False
+            epics.caput('2xfm:scanPause.VAL', 0)
+            print('Starting step scan...')
+            self.scan2.EXSC = 1
+            time.sleep(10.0)
+            while not done:
+                time.sleep(5.0)
+                done = self.scan2.BUSY==0
+            print('Step scan done.')
+
+            # Fly Scan
+            epics.caput(self.soft_prefix+'stepfly.VAL', 1)
+            epics.caput(self.ioc_prefix+'FlySetup:DwellTime.VAL', 30)
+
+            self.FscanH.P1WD = 0.06
+            self.FscanH.NPTS = 86
+            self.Fscan1.P1WD = 0.02
+            self.Fscan1.NPTS = 29
+
+            done = False
+            epics.caput('2xfm:FscanPause.VAL', 0)
+            print('Starting fly scan...')
+            self.Fscan1.EXSC = 1
+            time.sleep(10.0)
+            while not done:
+                time.sleep(5.0)
+                done = self.Fscan1.BUSY==0
+            print('Step fly done.')
+
+            epics.caput('2xfm:userStringCalc10.CC',old_comment) 
+
     def align_cfg(self, **kwargs):
-        # Move cfg in
-        self.move_stage_stack(value=2, wait=True)
+        if value==1:
+            # Move cfg in
+            self.move_stage_stack(value=2, wait=True)
 
-        # set scaler count time
-        self.scaler1.time = 0.1
+            # set scaler count time
+            self.scaler1.time = 0.1
 
-        def move_to_peak(xl, yl):
-            xmax, ymax, m = None, None, None
-            for x in xl:
-                for y in yl:
-                    self.tx_det.x.move(x, wait=True)
-                    self.tx_det.y.move(y, wait=True)
-                    # Trigger scaler
-                    self.scaler1.count()
-                    if not m:
-                        m = self.scaler1.channel_5
-                        xm = x
-                        ym = y
-                    else:
-                        if self.scaler1.channel_5>m:
-                            m=self.scaler1.channel_5
+            def move_to_peak(xl, yl):
+                xmax, ymax, m = None, None, None
+                for x in xl:
+                    for y in yl:
+                        self.tx_det.x.move(x, wait=True)
+                        self.tx_det.y.move(y, wait=True)
+                        # Trigger scaler
+                        self.scaler1.count()
+                        if not m:
+                            m = self.scaler1.channel_5
                             xm = x
                             ym = y
+                        else:
+                            if self.scaler1.channel_5>m:
+                                m=self.scaler1.channel_5
+                                xm = x
+                                ym = y
 
-            self.tx_det.x.move(xm)
-            self.tx_det.y.move(ym)
+                self.tx_det.x.move(xm)
+                self.tx_det.y.move(ym)
 
-        # Scan 1 1.2x1.2mm
-        cur_pos_x = self.tx_det.x.get()
-        cur_pos_y = self.tx_det.y.get()
-        step_x = 0.06 #mm
-        step_y = 0.06 #mm
-        xl,yl = np.meshgrid(np.arange(-10,11)*step_x+cur_pos_x,np.arange(-10,11)*step_y+cur_pos_y)
-        move_to_peak(xl, yl)
-        # Scan 2 0.12x0.12mm
-        cur_pos_x = self.tx_det.x.get()
-        cur_pos_y = self.tx_det.y.get()
-        step_x = 0.006 #mm
-        step_y = 0.006 #mm
-        xl,yl = np.meshgrid(np.arange(-10,11)*step_x+cur_pos_x,np.arange(-10,11)*step_y+cur_pos_y)
-        move_to_peak(xl, yl)
+            # Scan 1 1.2x1.2mm
+            cur_pos_x = self.tx_det.x.get()
+            cur_pos_y = self.tx_det.y.get()
+            step_x = 0.06 #mm
+            step_y = 0.06 #mm
+            xl,yl = np.meshgrid(np.arange(-10,11)*step_x+cur_pos_x,np.arange(-10,11)*step_y+cur_pos_y)
+            move_to_peak(xl, yl)
+            # Scan 2 0.12x0.12mm
+            cur_pos_x = self.tx_det.x.get()
+            cur_pos_y = self.tx_det.y.get()
+            step_x = 0.006 #mm
+            step_y = 0.006 #mm
+            xl,yl = np.meshgrid(np.arange(-10,11)*step_x+cur_pos_x,np.arange(-10,11)*step_y+cur_pos_y)
+            move_to_peak(xl, yl)
 
 def handle_exit(queue):
     def signal_handler(signal,frame):

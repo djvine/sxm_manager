@@ -1,12 +1,12 @@
 
 file {
-	name="/home/david/python/sxm_manager/adl/beamline_admin.adl"
+	name="beamline_admin.adl"
 	version=030107
 }
 display {
 	object {
-		x=516
-		y=350
+		x=907
+		y=472
 		width=400
 		height=400
 	}
@@ -87,83 +87,171 @@ display {
 		1a7309,
 	}
 }
-composite {
+"message button" {
 	object {
-		x=147
-		y=68
-		width=86
-		height=51
+		x=131
+		y=39
+		width=140
+		height=18
 	}
-	"composite name"=""
-	children {
-		"message button" {
-			object {
-				x=147
-				y=96
-				width=86
-				height=23
-			}
-			control {
-				chan="2xfmS1:align_cfg_det.VAL"
-				clr=14
-				bclr=21
-			}
-			label="Forget it!"
-			press_msg="-1"
-			release_msg="0"
-		}
-		"message button" {
-			object {
-				x=147
-				y=68
-				width=86
-				height=23
-			}
-			control {
-				chan="2xfmS1:align_cfg_det.VAL"
-				clr=14
-				bclr=61
-			}
-			label="Really?"
-			press_msg="2"
-			release_msg="0"
-		}
+	control {
+		chan="2xfmS1:setup_user_dirs.VAL"
+		clr=14
+		bclr=51
 	}
-	"dynamic attribute" {
-		vis="calc"
-		calc="A=1"
-		chan="2xfmS1:align_cfg_det.VAL"
-	}
+	label="Generate User Dirs"
+	press_msg="1"
+	release_msg="0"
 }
 composite {
 	object {
-		x=147
-		y=96
-		width=86
-		height=23
+		x=110
+		y=367
+		width=175
+		height=21
 	}
 	"composite name"=""
 	children {
-		"message button" {
+		rectangle {
 			object {
-				x=147
-				y=96
-				width=86
-				height=23
+				x=110
+				y=367
+				width=175
+				height=21
 			}
-			control {
-				chan="2xfmS1:align_cfg_det.VAL"
-				clr=14
-				bclr=51
+			"basic attribute" {
+				clr=2
 			}
-			label="Align cfg det"
-			press_msg="1"
-			release_msg="0"
+		}
+		text {
+			object {
+				x=112
+				y=368
+				width=170
+				height=19
+			}
+			"basic attribute" {
+				clr=23
+			}
+			textix="Beamline Staff Only"
+			align="horiz. centered"
 		}
 	}
-	"dynamic attribute" {
-		vis="calc"
-		calc="A=0"
-		chan="2xfmS1:align_cfg_det.VAL"
+}
+rectangle {
+	object {
+		x=0
+		y=0
+		width=400
+		height=400
 	}
+	"basic attribute" {
+		clr=23
+		fill="outline"
+		width=5
+	}
+}
+"message button" {
+	object {
+		x=121
+		y=60
+		width=160
+		height=18
+	}
+	control {
+		chan="2xfmS1:setup_user_dirs.VAL"
+		clr=14
+		bclr=51
+	}
+	label="Generate Dirs & Set Save"
+	press_msg="2"
+	release_msg="0"
+}
+composite {
+	object {
+		x=116
+		y=11
+		width=175
+		height=21
+	}
+	"composite name"=""
+	children {
+		rectangle {
+			object {
+				x=116
+				y=11
+				width=175
+				height=21
+			}
+			"basic attribute" {
+				clr=2
+			}
+		}
+		text {
+			object {
+				x=118
+				y=14
+				width=170
+				height=14
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Setup Directories"
+			align="horiz. centered"
+		}
+	}
+}
+rectangle {
+	object {
+		x=109
+		y=87
+		width=175
+		height=21
+	}
+	"basic attribute" {
+		clr=2
+	}
+}
+text {
+	object {
+		x=111
+		y=90
+		width=170
+		height=14
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Take Standards"
+	align="horiz. centered"
+}
+"message button" {
+	object {
+		x=123
+		y=133
+		width=140
+		height=18
+	}
+	control {
+		chan="2xfmS1:take_standards.VAL"
+		clr=14
+		bclr=51
+	}
+	label="Do Standards Scans"
+	press_msg="1"
+	release_msg="0"
+}
+text {
+	object {
+		x=98
+		y=115
+		width=200
+		height=14
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Put XRF Standards In First!"
+	align="horiz. centered"
 }

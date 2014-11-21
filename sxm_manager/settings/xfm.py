@@ -13,6 +13,8 @@ callbacks = {
         soft_prefix+'scan_type_select.VAL': 'select_scan_type',
         soft_prefix+'stepfly.VAL': 'toggle_stepfly_state',
         soft_prefix+'dwell.VAL': 'update_dwell',
+        ioc_prefix+'userTran1.P': 'update_dwell',
+        ioc_prefix+'FlySetup:DwellTime.VAL': 'update_dwell',
         soft_prefix+'begin_scan_1d.VAL': 'do_1d_scan',
         soft_prefix+'begin_scan_2d.VAL': 'do_2d_scan',
         soft_prefix+'pinhole_define.VAL': 'pinhole_define',
@@ -23,6 +25,14 @@ callbacks = {
         soft_prefix+'stage_stack_define.VAL': 'stage_stack_define',
         soft_prefix+'alignment.VAL': 'alignment_mode',
         soft_prefix+'to_batch.VAL': 'push_to_batch',
+	    soft_prefix+'generate_config.VAL': 'generate_config',
+	    soft_prefix+'reprocess_all.VAL': 'maps_reprocess_all',
+	    soft_prefix+'process_now.VAL': 'maps_process_now',
+	    soft_prefix+'setup_user_dirs.VAL': 'generate_user_dirs',
+        soft_prefix+'update_user.VAL': 'update_user',
+        ioc_prefix+'scan2.EXSC': 'scan_ends_process_now',
+        ioc_prefix+'Fscan1.EXSC': 'scan_ends_process_now',
+        soft_prefix+'take_standards.VAL': 'take_standards',
     }
 
 scan_records = ['scanH','scan1','scan2','scan3','FscanH','Fscan1','Fscan2','Fscan3']
@@ -48,9 +58,9 @@ stage_stacks = {
             'lock_state': soft_prefix+'zp20_locked.VAL',
             },
         'zp10': {
-            'x': ioc_prefix+'m17',
-            'y': ioc_prefix+'m22',
-            'z': ioc_prefix+'m20',
+            'x': ioc_prefix+'m30',
+            'y': ioc_prefix+'m12',
+            'z': ioc_prefix+'m29',
             'lock_state': soft_prefix+'zp10_locked.VAL',
             },
         'osa': {
@@ -115,6 +125,6 @@ move_define_axes = {
 # Scan estimate overhead - used to accurately estimate scan time
 time_estimate_overhead = {
         #       'mode': [constant per pt, multiplier per pt, constant per line, multiplier per line]
-        'step': [0.0, 1.1, 0.0, 1.1],
-        'fly': [0.0, 1.1, 0.0, 1.1]
+        'step': [9.4406, 1.784, 0.0, 1.1],
+        'fly': [0.1, 1.05, 0.0, 1.1]
         }
