@@ -1,3 +1,4 @@
+$(P)alignment.VAL
 $(P)pinhole_define.VAL
 $(P)pinhole_x_0.VAL
 $(P)pinhole_y_0.VAL

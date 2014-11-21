@@ -681,7 +681,7 @@ record(bi, "$(P):show_warning2") {
   field(VAL, "0")
 }
 
-record(ai, "$(P):align_cfg_det") {
+record(bo, "$(P):align_cfg_det") {
   field(SCAN, "Passive")
   field(DTYP, "Soft Channel")
   field(VAL, "0")
@@ -775,8 +775,21 @@ record(calcout, "$(P):pinhole_in7") {
   field(INPD, "2xfmS1:pinhole_y_7.VAL PP")
 }
 
+
+record(bi, "$(P):take_standards") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+}
+
+record(bi, "$(P):alignment_mode_status") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+}
+
 #! Further lines contain data used by VisualDCT
-#! View(520,700,0.6)
+#! View(1460,780,0.6)
 #! Record("$(P):pinhole_x_0",1720,2167,0,1,"$(P):pinhole_x_0")
 #! Record("$(P):pinhole_y_0",1900,2167,0,1,"$(P):pinhole_y_0")
 #! Record("$(P):pinhole_x_1",1720,2287,0,1,"$(P):pinhole_x_1")
@@ -889,3 +902,5 @@ record(calcout, "$(P):pinhole_in7") {
 #! Record("$(P):pinhole_in5",1540,2369,0,1,"$(P):pinhole_in5")
 #! Record("$(P):pinhole_in6",1360,2549,0,1,"$(P):pinhole_in6")
 #! Record("$(P):pinhole_in7",1540,2549,0,1,"$(P):pinhole_in7")
+#! Record("$(P):take_standards",4560,1562,0,1,"$(P):take_standards")
+#! Record("$(P):alignment_mode_status",3120,1582,0,1,"$(P):alignment_mode_status")

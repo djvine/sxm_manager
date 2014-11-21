@@ -1,0 +1,9 @@
+Pinhole 0 X: -8.600000, Pinhole 0 Y: 0.000000
+Pinhole 1 X: 22.405000, Pinhole 1 Y: -7.580000
+Pinhole 2 X: -8.600000, Pinhole 2 Y: 0.000000
+Pinhole 3 X: -8.565000, Pinhole 3 Y: -15.045000
+Pinhole 4 X: -0.230000, Pinhole 4 Y: -14.940000
+Pinhole 5 X: 0.090000, Pinhole 5 Y: -0.030000
+Pinhole 6 X: 15.000000, Pinhole 6 Y: -0.050000
+Pinhole 7 X: 14.925000, Pinhole 7 Y: 0.000000
+

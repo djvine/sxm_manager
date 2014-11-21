@@ -987,8 +987,83 @@ record(stringout, "$(P):run_string") {
   field(VAL, "Commissioning")
 }
 
+record(bo, "$(P):setup_user_dirs") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+}
+
+record(bo, "$(P):update_user") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+}
+
+record(bo, "$(P):process_now") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+}
+
+record(stringout, "$(P):maps_status_1") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "No processing.")
+}
+
+record(stringout, "$(P):maps_status_2") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+}
+
+record(stringout, "$(P):maps_status_3") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+}
+
+record(stringout, "$(P):maps_status_4") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+}
+
+record(stringout, "$(P):maps_status_5") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+}
+
+record(stringout, "$(P):maps_status_6") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+}
+
+record(stringout, "$(P):maps_status_7") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+}
+
+record(stringout, "$(P):maps_status_8") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+}
+
+record(stringout, "$(P):maps_status_9") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+}
+
+record(stringout, "$(P):maps_status_10") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+}
+
+record(bo, "$(P):maps_processing_status") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+}
+
 #! Further lines contain data used by VisualDCT
-#! View(326,784,0.6)
+#! View(746,691,0.6)
 #! Record("$(P):element_1",20,15,0,0,"$(P):element_1")
 #! Record("$(P):element_2",20,195,0,1,"$(P):element_2")
 #! Record("$(P):element_3",20,395,0,1,"$(P):element_3")
@@ -1073,3 +1148,17 @@ record(stringout, "$(P):run_string") {
 #! Record("$(P):reprocess_all",1740,1502,0,1,"$(P):reprocess_all")
 #! Record("$(P):user_string",1560,1622,0,1,"$(P):user_string")
 #! Record("$(P):run_string",1740,1622,0,1,"$(P):run_string")
+#! Record("$(P):setup_user_dirs",2280,1502,0,1,"$(P):setup_user_dirs")
+#! Record("$(P):update_user",2100,1502,0,1,"$(P):update_user")
+#! Record("$(P):process_now",1920,1502,0,1,"$(P):process_now")
+#! Record("$(P):maps_status_1",1560,1742,0,1,"$(P):maps_status_1")
+#! Record("$(P):maps_status_2",1740,1755,0,1,"$(P):maps_status_2")
+#! Record("$(P):maps_status_3",1920,1755,0,1,"$(P):maps_status_3")
+#! Record("$(P):maps_status_4",2100,1755,0,1,"$(P):maps_status_4")
+#! Record("$(P):maps_status_5",2280,1755,0,1,"$(P):maps_status_5")
+#! Record("$(P):maps_status_6",1560,1875,0,1,"$(P):maps_status_6")
+#! Record("$(P):maps_status_7",1740,1875,0,1,"$(P):maps_status_7")
+#! Record("$(P):maps_status_8",1920,1875,0,1,"$(P):maps_status_8")
+#! Record("$(P):maps_status_9",2100,1875,0,1,"$(P):maps_status_9")
+#! Record("$(P):maps_status_10",2280,1875,0,1,"$(P):maps_status_10")
+#! Record("$(P):maps_processing_status",2460,1502,0,1,"$(P):maps_processing_status")
