@@ -56,3 +56,6 @@ docs/_build/
 
 # Django secret key
 ./deploy/SECRET
+
+# sxm manager credentials
+./sxm_manager/credentials.ini
