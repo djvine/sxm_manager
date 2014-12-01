@@ -775,7 +775,6 @@ record(calcout, "$(P):pinhole_in7") {
   field(INPD, "2xfmS1:pinhole_y_7.VAL PP")
 }
 
-
 record(bi, "$(P):take_standards") {
   field(SCAN, "Passive")
   field(DTYP, "Soft Channel")
@@ -788,8 +787,20 @@ record(bi, "$(P):alignment_mode_status") {
   field(VAL, "0")
 }
 
+record(bi, "$(P):user_mode") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+}
+
+record(bi, "$(P):zp_choice") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+  field(VAL, "0")
+}
+
 #! Further lines contain data used by VisualDCT
-#! View(1460,780,0.6)
+#! View(1460,750,0.6)
 #! Record("$(P):pinhole_x_0",1720,2167,0,1,"$(P):pinhole_x_0")
 #! Record("$(P):pinhole_y_0",1900,2167,0,1,"$(P):pinhole_y_0")
 #! Record("$(P):pinhole_x_1",1720,2287,0,1,"$(P):pinhole_x_1")
@@ -904,3 +915,5 @@ record(bi, "$(P):alignment_mode_status") {
 #! Record("$(P):pinhole_in7",1540,2549,0,1,"$(P):pinhole_in7")
 #! Record("$(P):take_standards",4560,1562,0,1,"$(P):take_standards")
 #! Record("$(P):alignment_mode_status",3120,1582,0,1,"$(P):alignment_mode_status")
+#! Record("$(P):user_mode",2760,1702,0,1,"$(P):user_mode")
+#! Record("$(P):zp_choice",2580,1702,0,1,"$(P):zp_choice")
