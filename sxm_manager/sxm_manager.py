@@ -34,6 +34,15 @@ class StageStack(object):
         for axis in self.axes:
             getattr(self, axis).disabled = 1-state
 
+    def redefine_to(self, vals):
+        # Redefine the current position
+        # Vals should be dict like {'x':0,'y':0}
+        try:
+            for axis in vals.keys():
+                getattr(self, axis).set_position(vals[axis])
+        except:
+            raise
+
 class SXM_Manager(object):
 
     def __init__(self, task_queue):
@@ -68,7 +77,7 @@ class SXM_Manager(object):
             for name in ['NPTS', 'P1WD', 'P1SI']:
                 self.callbacks[getattr(self, sc).PV(name).pvname] = 'update_time_estimate'
             # Add time remaining callback
-            if sc in ['scan2', 'Fscan1']:
+            if sc in ['scan1', 'FscanH']:
                 self.callbacks[getattr(self, sc).PV('CPT').pvname] = 'update_time_remaining'
 
         # define scalers
@@ -105,7 +114,7 @@ class SXM_Manager(object):
         for c_pv in self.callbacks.keys():
             self.c_pvs[c_pv] = epics.PV(c_pv, callback=self.on_changes)
 
-	self.c_pvs[self.soft_prefix+'heartbeat.VAL'].put(1-self.c_pvs[self.soft_prefix+'heartbeat.VAL'].get())
+        self.c_pvs[self.soft_prefix+'heartbeat.VAL'].put(1-self.c_pvs[self.soft_prefix+'heartbeat.VAL'].get())
 
     def run(self):
         while True:
@@ -235,9 +244,17 @@ class SXM_Manager(object):
         self.thinking.put(0)
 
     def pinhole_define(self, pvname, value, **kwargs):
+        # All of the pinhole positions are defined relative to the
+        # 500 micron pinhole which is set to (x,y)=(0,0)
         self.thinking.put(1)
+
+        if value==5: # 500micron pinhole
+            self.pinhole.redefine_to({'x':0, 'y':0})
+            time.sleep(0.1)
         epics.caput(self.soft_prefix+'pinhole_x_{:d}.VAL'.format(value), self.pinhole.x.VAL)
         epics.caput(self.soft_prefix+'pinhole_y_{:d}.VAL'.format(value), self.pinhole.y.VAL)
+        time.sleep(0.1)
+        self.pinhole_move(pvname, value)
         self.thinking.put(0)
 
     def stage_stack_move(self, value, wait=False, **kwargs):
@@ -251,6 +268,25 @@ class SXM_Manager(object):
     def stage_stack_define(self, value, **kwargs):
         if value>0:
             stack, location = self.move_define_axes[value]
+
+            if stack=='osa' and location=='in':
+                self.osa.redefine_to({'x':0, 'y':0})
+                # Define OSA Out as +3.5mm relative to OSA In
+                epics.caput(self.soft_prefix+'osa_x_out.VAL', 3.5)
+                epics.caput(self.soft_prefix+'osa_y_out.VAL', 0.0)
+            elif stack=='zp20' and location=='in':
+                # Define zp20 out as x=-25
+                epics.caput(self.soft_prefix+'zp20_x_out.VAL', 25.0)
+                epics.caput(self.soft_prefix+'zp20_y_out.VAL', self.zp20.y.VAL)
+                epics.caput(self.soft_prefix+'zp20_z_out.VAL', self.zp20.z.VAL)
+            elif stack=='zp10' and location=='in':
+                # Define zp10 out as x=+10
+                epics.caput(self.soft_prefix+'zp10_x_out.VAL', 10.0)
+                epics.caput(self.soft_prefix+'zp10_y_out.VAL', self.zp20.y.VAL)
+                epics.caput(self.soft_prefix+'zp10_z_out.VAL', self.zp20.z.VAL)
+            elif stack=='tx_det' and location=='1':
+                # CCD in
+                self.tx_det.redefine_to({'x':0, 'y':0})
 
             for axis in getattr(self, stack).axes:
                 if axis not in ['top', 'middle', 'theta']:
@@ -338,7 +374,7 @@ class SXM_Manager(object):
             # Move CCD in
             self.stage_stack_move(value=12, wait=True)
         epics.caput('2xfmS1:alignment_mode_status.VAL', 0)
-        
+
     def push_to_batch(self, value, **kwargs):
         if value>0:
             value -= 1
@@ -409,7 +445,7 @@ class SXM_Manager(object):
         if value==1:
             user = epics.caget('2xfmS1:user_string.VAL')
             run = epics.caget('2xfmS1:run_string.VAL')
-	
+
             beamline.generate_config(user, run)
 
     def maps_process_now(self, pvname, value, **kwargs):
@@ -472,24 +508,24 @@ class SXM_Manager(object):
 
     def maps_reprocess_all(self, pvname, value, **kwargs):
 
-       if value == 1: 
+       if value == 1:
             user = epics.caget('2xfmS1:user_string.VAL')
             run = epics.caget('2xfmS1:run_string.VAL')
 
             if os.path.exists('/mnt/xfm0/data/2ide/{run:s}/{user:s}/output/local_done'.format(**{'user':user, 'run':run})):
                 fn_mda_done = '/mnt/xfm0/data/2ide/{run:s}/{user:s}/output/local_done/*.txt'.format(**{'user':user, 'run':run})
-        
+
                 files = glob.glob(fn_mda_done)
 
                 for file in files:
                     shutil.copy(file, '/tmp')
                     os.remove(file)
-                   
+
 
             self.maps_process_now(pvname=None, value=1)
-        
+
     def scan_ends_process_now(self, pvname, value, **kwargs):
-        
+
         if value==0:
             self.maps_process_now(pvname=None, value=1)
 
@@ -553,7 +589,7 @@ class SXM_Manager(object):
                 done = self.Fscan1.BUSY==0
             print('Step fly done.')
 
-            epics.caput('2xfm:userStringCalc10.CC',old_comment) 
+            epics.caput('2xfm:userStringCalc10.CC',old_comment)
 
     def align_cfg(self, **kwargs):
         if value==1:

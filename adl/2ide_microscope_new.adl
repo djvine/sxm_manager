@@ -1,12 +1,12 @@
 
 file {
-	name="/home/beams8/USER2IDE/adl/2ide_microscope_new.adl"
+	name="/home/david/python/sxm_manager/adl/2ide_microscope_new.adl"
 	version=030107
 }
 display {
 	object {
-		x=407
-		y=606
+		x=7
+		y=233
 		width=1360
 		height=640
 	}
@@ -484,7 +484,7 @@ rectangle {
 }
 "related display" {
 	object {
-		x=630
+		x=559
 		y=279
 		width=74
 		height=17
@@ -506,7 +506,7 @@ rectangle {
 	}
 	clr=0
 	bclr=17
-	label="-   ZP"
+	label="-     ZP"
 }
 "related display" {
 	object {
@@ -725,7 +725,7 @@ text {
 	"basic attribute" {
 		clr=14
 	}
-	textix="v3.1 DV/SV/DL oct2014"
+	textix="v3.2 DV/SV/DL oct2014"
 }
 "related display" {
 	object {
@@ -838,7 +838,7 @@ rectangle {
 	}
 	clr=0
 	bclr=17
-	label="-   OSA"
+	label="-    OSA"
 }
 composite {
 	object {
@@ -1265,138 +1265,6 @@ composite {
 			textix="E IS CLOSED"
 		}
 	}
-}
-text {
-	object {
-		x=212
-		y=509
-		width=49
-		height=13
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Define"
-}
-"message button" {
-	object {
-		x=163
-		y=539
-		width=34
-		height=11
-	}
-	control {
-		chan="2xfmS1:pinhole_define.VAL"
-		clr=14
-		bclr=30
-	}
-	label="300"
-	press_msg="4"
-}
-"message button" {
-	object {
-		x=200
-		y=539
-		width=34
-		height=11
-	}
-	control {
-		chan="2xfmS1:pinhole_define.VAL"
-		clr=14
-		bclr=30
-	}
-	label="500"
-	press_msg="5"
-}
-"message button" {
-	object {
-		x=238
-		y=539
-		width=34
-		height=11
-	}
-	control {
-		chan="2xfmS1:pinhole_define.VAL"
-		clr=14
-		bclr=30
-	}
-	label="700"
-	press_msg="6"
-}
-"message button" {
-	object {
-		x=275
-		y=539
-		width=34
-		height=11
-	}
-	control {
-		chan="2xfmS1:pinhole_define.VAL"
-		clr=14
-		bclr=30
-	}
-	label="1000"
-	press_msg="7"
-}
-"message button" {
-	object {
-		x=163
-		y=525
-		width=34
-		height=11
-	}
-	control {
-		chan="2xfmS1:pinhole_define.VAL"
-		clr=14
-		bclr=30
-	}
-	label="Out"
-	press_msg="0"
-}
-"message button" {
-	object {
-		x=200
-		y=525
-		width=34
-		height=11
-	}
-	control {
-		chan="2xfmS1:pinhole_define.VAL"
-		clr=14
-		bclr=30
-	}
-	label="30"
-	press_msg="1"
-}
-"message button" {
-	object {
-		x=238
-		y=525
-		width=34
-		height=11
-	}
-	control {
-		chan="2xfmS1:pinhole_define.VAL"
-		clr=14
-		bclr=30
-	}
-	label="50"
-	press_msg="2"
-}
-"message button" {
-	object {
-		x=275
-		y=525
-		width=34
-		height=11
-	}
-	control {
-		chan="2xfmS1:pinhole_define.VAL"
-		clr=14
-		bclr=30
-	}
-	label="100"
-	press_msg="3"
 }
 composite {
 	object {
@@ -6523,164 +6391,6 @@ composite {
 }
 composite {
 	object {
-		x=996
-		y=524
-		width=159
-		height=13
-	}
-	"composite name"=""
-	children {
-		"message button" {
-			object {
-				x=1048
-				y=525
-				width=15
-				height=11
-			}
-			control {
-				chan="2xfmS1:stage_stack_define.VAL"
-				clr=14
-				bclr=30
-			}
-			label="1"
-			press_msg="7"
-			release_msg="0"
-		}
-		text {
-			object {
-				x=996
-				y=524
-				width=49
-				height=13
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Define"
-		}
-		"message button" {
-			object {
-				x=1121
-				y=525
-				width=34
-				height=11
-			}
-			control {
-				chan="2xfmS1:stage_stack_define.VAL"
-				clr=14
-				bclr=30
-			}
-			label="OUT"
-			press_msg="11"
-			release_msg="0"
-		}
-		"message button" {
-			object {
-				x=1066
-				y=525
-				width=15
-				height=11
-			}
-			control {
-				chan="2xfmS1:stage_stack_define.VAL"
-				clr=14
-				bclr=30
-			}
-			label="2"
-			press_msg="8"
-			release_msg="0"
-		}
-		"message button" {
-			object {
-				x=1085
-				y=525
-				width=15
-				height=11
-			}
-			control {
-				chan="2xfmS1:stage_stack_define.VAL"
-				clr=14
-				bclr=30
-			}
-			label="3"
-			press_msg="9"
-			release_msg="0"
-		}
-		"message button" {
-			object {
-				x=1103
-				y=525
-				width=15
-				height=11
-			}
-			control {
-				chan="2xfmS1:stage_stack_define.VAL"
-				clr=14
-				bclr=30
-			}
-			label="4"
-			press_msg="10"
-			release_msg="0"
-		}
-	}
-}
-composite {
-	object {
-		x=855
-		y=525
-		width=124
-		height=11
-	}
-	"composite name"=""
-	children {
-		"message button" {
-			object {
-				x=907
-				y=525
-				width=34
-				height=11
-			}
-			control {
-				chan="2xfmS1:stage_stack_define.VAL"
-				clr=14
-				bclr=30
-			}
-			label="IN"
-			press_msg="5"
-			release_msg="0"
-		}
-		text {
-			object {
-				x=855
-				y=525
-				width=49
-				height=11
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Define"
-		}
-		"message button" {
-			object {
-				x=945
-				y=525
-				width=34
-				height=11
-			}
-			control {
-				chan="2xfmS1:stage_stack_define.VAL"
-				clr=14
-				bclr=30
-			}
-			label="OUT"
-			press_msg="6"
-			release_msg="0"
-		}
-	}
-}
-composite {
-	object {
 		x=725
 		y=106
 		width=30
@@ -6826,76 +6536,6 @@ text {
 	label="Ptycho"
 	press_msg="14"
 	release_msg="0"
-}
-composite {
-	object {
-		x=1175
-		y=527
-		width=179
-		height=11
-	}
-	"composite name"=""
-	children {
-		"message button" {
-			object {
-				x=1227
-				y=527
-				width=40
-				height=11
-			}
-			control {
-				chan="2xfmS1:stage_stack_define.VAL"
-				clr=14
-				bclr=30
-			}
-			label="CCD"
-			press_msg="12"
-		}
-		text {
-			object {
-				x=1175
-				y=527
-				width=49
-				height=11
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Define"
-		}
-		"message button" {
-			object {
-				x=1271
-				y=527
-				width=40
-				height=11
-			}
-			control {
-				chan="2xfmS1:stage_stack_define.VAL"
-				clr=14
-				bclr=30
-			}
-			label="CFG"
-			press_msg="13"
-			release_msg="0"
-		}
-		"message button" {
-			object {
-				x=1314
-				y=527
-				width=40
-				height=11
-			}
-			control {
-				chan="2xfmS1:stage_stack_define.VAL"
-				clr=14
-				bclr=30
-			}
-			label="Ptycho"
-			press_msg="14"
-			release_msg="0"
-		}
-	}
 }
 composite {
 	object {
@@ -7116,111 +6756,10 @@ rectangle {
 }
 composite {
 	object {
-		x=685
-		y=485
-		width=124
-		height=28
-	}
-	"composite name"=""
-	children {
-		composite {
-			object {
-				x=685
-				y=502
-				width=124
-				height=11
-			}
-			"composite name"=""
-			children {
-				"message button" {
-					object {
-						x=737
-						y=502
-						width=34
-						height=11
-					}
-					control {
-						chan="2xfmS1:stage_stack_define.VAL"
-						clr=14
-						bclr=30
-					}
-					label="IN"
-					press_msg="3"
-					release_msg="0"
-				}
-				text {
-					object {
-						x=685
-						y=502
-						width=49
-						height=11
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Define"
-				}
-				"message button" {
-					object {
-						x=775
-						y=502
-						width=34
-						height=11
-					}
-					control {
-						chan="2xfmS1:stage_stack_define.VAL"
-						clr=14
-						bclr=30
-					}
-					label="OUT"
-					press_msg="4"
-					release_msg="0"
-				}
-			}
-		}
-		composite {
-			object {
-				x=687
-				y=485
-				width=120
-				height=14
-			}
-			"composite name"=""
-			children {
-				rectangle {
-					object {
-						x=687
-						y=485
-						width=120
-						height=14
-					}
-					"basic attribute" {
-						clr=6
-					}
-				}
-				text {
-					object {
-						x=687
-						y=486
-						width=120
-						height=13
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="High Resolution"
-					align="horiz. centered"
-				}
-			}
-		}
-	}
-}
-composite {
-	object {
-		x=687
-		y=386
-		width=120
-		height=31
+		x=695
+		y=403
+		width=104
+		height=14
 	}
 	"composite name"=""
 	children {
@@ -7233,164 +6772,17 @@ composite {
 			}
 			"composite name"=""
 			children {
-				composite {
-					object {
-						x=695
-						y=403
-						width=104
-						height=14
-					}
-					"composite name"=""
-					children {
-						"message button" {
-							object {
-								x=727
-								y=403
-								width=34
-								height=14
-							}
-							control {
-								chan="2xfmS1:stage_stack_move.VAL"
-								clr=14
-								bclr=51
-							}
-							label="IN"
-							press_msg="1"
-							release_msg="0"
-						}
-						text {
-							object {
-								x=695
-								y=403
-								width=29
-								height=13
-							}
-							"basic attribute" {
-								clr=14
-							}
-							textix="Move"
-						}
-						"message button" {
-							object {
-								x=765
-								y=403
-								width=34
-								height=14
-							}
-							control {
-								chan="2xfmS1:stage_stack_move.VAL"
-								clr=14
-								bclr=51
-							}
-							label="OUT"
-							press_msg="2"
-							release_msg="0"
-						}
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=687
-				y=386
-				width=120
-				height=14
-			}
-			"composite name"=""
-			children {
-				rectangle {
-					object {
-						x=687
-						y=386
-						width=120
-						height=14
-					}
-					"basic attribute" {
-						clr=6
-					}
-				}
-				text {
-					object {
-						x=687
-						y=387
-						width=120
-						height=13
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="High Flux"
-					align="horiz. centered"
-				}
-			}
-		}
-	}
-}
-composite {
-	object {
-		x=685
-		y=523
-		width=124
-		height=28
-	}
-	"composite name"=""
-	children {
-		composite {
-			object {
-				x=687
-				y=523
-				width=120
-				height=14
-			}
-			"composite name"=""
-			children {
-				rectangle {
-					object {
-						x=687
-						y=523
-						width=120
-						height=14
-					}
-					"basic attribute" {
-						clr=6
-					}
-				}
-				text {
-					object {
-						x=687
-						y=524
-						width=120
-						height=13
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="High Flux"
-					align="horiz. centered"
-				}
-			}
-		}
-		composite {
-			object {
-				x=685
-				y=540
-				width=124
-				height=11
-			}
-			"composite name"=""
-			children {
 				"message button" {
 					object {
-						x=737
-						y=540
+						x=727
+						y=403
 						width=34
-						height=11
+						height=14
 					}
 					control {
-						chan="2xfmS1:stage_stack_define.VAL"
+						chan="2xfmS1:stage_stack_move.VAL"
 						clr=14
-						bclr=30
+						bclr=51
 					}
 					label="IN"
 					press_msg="1"
@@ -7398,33 +6790,73 @@ composite {
 				}
 				text {
 					object {
-						x=685
-						y=540
-						width=49
-						height=11
+						x=695
+						y=403
+						width=29
+						height=13
 					}
 					"basic attribute" {
 						clr=14
 					}
-					textix="Define"
+					textix="Move"
 				}
 				"message button" {
 					object {
-						x=775
-						y=540
+						x=765
+						y=403
 						width=34
-						height=11
+						height=14
 					}
 					control {
-						chan="2xfmS1:stage_stack_define.VAL"
+						chan="2xfmS1:stage_stack_move.VAL"
 						clr=14
-						bclr=30
+						bclr=51
 					}
 					label="OUT"
 					press_msg="2"
 					release_msg="0"
 				}
 			}
+		}
+	}
+	"dynamic attribute" {
+		vis="calc"
+		calc="A=0"
+		chan="2xfmS1:zp_choice.VAL"
+	}
+}
+composite {
+	object {
+		x=687
+		y=386
+		width=120
+		height=14
+	}
+	"composite name"=""
+	children {
+		rectangle {
+			object {
+				x=687
+				y=386
+				width=120
+				height=14
+			}
+			"basic attribute" {
+				clr=6
+			}
+		}
+		text {
+			object {
+				x=687
+				y=387
+				width=120
+				height=13
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="High Flux"
+			align="horiz. centered"
 		}
 	}
 }
@@ -7606,100 +7038,94 @@ composite {
 		x=686
 		y=301
 		width=120
-		height=31
+		height=14
 	}
 	"composite name"=""
 	children {
-		composite {
+		rectangle {
 			object {
 				x=686
 				y=301
 				width=120
 				height=14
 			}
-			"composite name"=""
-			children {
-				rectangle {
-					object {
-						x=686
-						y=301
-						width=120
-						height=14
-					}
-					"basic attribute" {
-						clr=6
-					}
-				}
-				text {
-					object {
-						x=686
-						y=302
-						width=120
-						height=13
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="High Resolution"
-					align="horiz. centered"
-				}
+			"basic attribute" {
+				clr=6
 			}
 		}
-		composite {
+		text {
+			object {
+				x=686
+				y=302
+				width=120
+				height=13
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="High Resolution"
+			align="horiz. centered"
+		}
+	}
+}
+composite {
+	object {
+		x=695
+		y=318
+		width=104
+		height=14
+	}
+	"composite name"=""
+	children {
+		"message button" {
+			object {
+				x=727
+				y=318
+				width=34
+				height=14
+			}
+			control {
+				chan="2xfmS1:stage_stack_move.VAL"
+				clr=14
+				bclr=51
+			}
+			label="IN"
+			press_msg="3"
+			release_msg="0"
+		}
+		text {
 			object {
 				x=695
 				y=318
-				width=104
+				width=29
+				height=13
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Move"
+		}
+		"message button" {
+			object {
+				x=765
+				y=318
+				width=34
 				height=14
 			}
-			"composite name"=""
-			children {
-				"message button" {
-					object {
-						x=727
-						y=318
-						width=34
-						height=14
-					}
-					control {
-						chan="2xfmS1:stage_stack_move.VAL"
-						clr=14
-						bclr=51
-					}
-					label="IN"
-					press_msg="3"
-					release_msg="0"
-				}
-				text {
-					object {
-						x=695
-						y=318
-						width=29
-						height=13
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Move"
-				}
-				"message button" {
-					object {
-						x=765
-						y=318
-						width=34
-						height=14
-					}
-					control {
-						chan="2xfmS1:stage_stack_move.VAL"
-						clr=14
-						bclr=51
-					}
-					label="OUT"
-					press_msg="4"
-					release_msg="0"
-				}
+			control {
+				chan="2xfmS1:stage_stack_move.VAL"
+				clr=14
+				bclr=51
 			}
+			label="OUT"
+			press_msg="4"
+			release_msg="0"
 		}
+	}
+	"dynamic attribute" {
+		vis="calc"
+		calc="A=1"
+		chan="2xfmS1:zp_choice.VAL"
 	}
 }
 text {
@@ -7954,5 +7380,707 @@ text {
 		bclr=51
 	}
 	limits {
+	}
+}
+composite {
+	object {
+		x=163
+		y=485
+		width=1191
+		height=66
+	}
+	"composite name"=""
+	children {
+		composite {
+			object {
+				x=685
+				y=485
+				width=124
+				height=28
+			}
+			"composite name"=""
+			children {
+				composite {
+					object {
+						x=685
+						y=502
+						width=124
+						height=11
+					}
+					"composite name"=""
+					children {
+						"message button" {
+							object {
+								x=737
+								y=502
+								width=34
+								height=11
+							}
+							control {
+								chan="2xfmS1:stage_stack_define.VAL"
+								clr=14
+								bclr=30
+							}
+							label="IN"
+							press_msg="3"
+							release_msg="0"
+						}
+						text {
+							object {
+								x=685
+								y=502
+								width=49
+								height=11
+							}
+							"basic attribute" {
+								clr=14
+							}
+							textix="Define"
+						}
+						"message button" {
+							object {
+								x=775
+								y=502
+								width=34
+								height=11
+							}
+							control {
+								chan="2xfmS1:stage_stack_define.VAL"
+								clr=14
+								bclr=30
+							}
+							label="OUT"
+							press_msg="4"
+							release_msg="0"
+						}
+					}
+				}
+				composite {
+					object {
+						x=687
+						y=485
+						width=120
+						height=14
+					}
+					"composite name"=""
+					children {
+						rectangle {
+							object {
+								x=687
+								y=485
+								width=120
+								height=14
+							}
+							"basic attribute" {
+								clr=6
+							}
+						}
+						text {
+							object {
+								x=687
+								y=486
+								width=120
+								height=13
+							}
+							"basic attribute" {
+								clr=14
+							}
+							textix="High Resolution"
+							align="horiz. centered"
+						}
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=685
+				y=523
+				width=124
+				height=28
+			}
+			"composite name"=""
+			children {
+				composite {
+					object {
+						x=687
+						y=523
+						width=120
+						height=14
+					}
+					"composite name"=""
+					children {
+						rectangle {
+							object {
+								x=687
+								y=523
+								width=120
+								height=14
+							}
+							"basic attribute" {
+								clr=6
+							}
+						}
+						text {
+							object {
+								x=687
+								y=524
+								width=120
+								height=13
+							}
+							"basic attribute" {
+								clr=14
+							}
+							textix="High Flux"
+							align="horiz. centered"
+						}
+					}
+				}
+				composite {
+					object {
+						x=685
+						y=540
+						width=124
+						height=11
+					}
+					"composite name"=""
+					children {
+						"message button" {
+							object {
+								x=737
+								y=540
+								width=34
+								height=11
+							}
+							control {
+								chan="2xfmS1:stage_stack_define.VAL"
+								clr=14
+								bclr=30
+							}
+							label="IN"
+							press_msg="1"
+							release_msg="0"
+						}
+						text {
+							object {
+								x=685
+								y=540
+								width=49
+								height=11
+							}
+							"basic attribute" {
+								clr=14
+							}
+							textix="Define"
+						}
+						"message button" {
+							object {
+								x=775
+								y=540
+								width=34
+								height=11
+							}
+							control {
+								chan="2xfmS1:stage_stack_define.VAL"
+								clr=14
+								bclr=30
+							}
+							label="OUT"
+							press_msg="2"
+							release_msg="0"
+						}
+					}
+				}
+			}
+		}
+		text {
+			object {
+				x=212
+				y=509
+				width=49
+				height=13
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Define"
+		}
+		"message button" {
+			object {
+				x=163
+				y=539
+				width=34
+				height=11
+			}
+			control {
+				chan="2xfmS1:pinhole_define.VAL"
+				clr=14
+				bclr=30
+			}
+			label="300"
+			press_msg="4"
+		}
+		"message button" {
+			object {
+				x=200
+				y=539
+				width=34
+				height=11
+			}
+			control {
+				chan="2xfmS1:pinhole_define.VAL"
+				clr=14
+				bclr=30
+			}
+			label="500"
+			press_msg="5"
+		}
+		"message button" {
+			object {
+				x=238
+				y=539
+				width=34
+				height=11
+			}
+			control {
+				chan="2xfmS1:pinhole_define.VAL"
+				clr=14
+				bclr=30
+			}
+			label="700"
+			press_msg="6"
+		}
+		"message button" {
+			object {
+				x=275
+				y=539
+				width=34
+				height=11
+			}
+			control {
+				chan="2xfmS1:pinhole_define.VAL"
+				clr=14
+				bclr=30
+			}
+			label="1000"
+			press_msg="7"
+		}
+		"message button" {
+			object {
+				x=163
+				y=525
+				width=34
+				height=11
+			}
+			control {
+				chan="2xfmS1:pinhole_define.VAL"
+				clr=14
+				bclr=30
+			}
+			label="Out"
+			press_msg="0"
+		}
+		"message button" {
+			object {
+				x=200
+				y=525
+				width=34
+				height=11
+			}
+			control {
+				chan="2xfmS1:pinhole_define.VAL"
+				clr=14
+				bclr=30
+			}
+			label="30"
+			press_msg="1"
+		}
+		"message button" {
+			object {
+				x=238
+				y=525
+				width=34
+				height=11
+			}
+			control {
+				chan="2xfmS1:pinhole_define.VAL"
+				clr=14
+				bclr=30
+			}
+			label="50"
+			press_msg="2"
+		}
+		"message button" {
+			object {
+				x=275
+				y=525
+				width=34
+				height=11
+			}
+			control {
+				chan="2xfmS1:pinhole_define.VAL"
+				clr=14
+				bclr=30
+			}
+			label="100"
+			press_msg="3"
+		}
+		composite {
+			object {
+				x=855
+				y=525
+				width=124
+				height=11
+			}
+			"composite name"=""
+			children {
+				"message button" {
+					object {
+						x=907
+						y=525
+						width=34
+						height=11
+					}
+					control {
+						chan="2xfmS1:stage_stack_define.VAL"
+						clr=14
+						bclr=30
+					}
+					label="IN"
+					press_msg="5"
+					release_msg="0"
+				}
+				text {
+					object {
+						x=855
+						y=525
+						width=49
+						height=11
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Define"
+				}
+				"message button" {
+					object {
+						x=945
+						y=525
+						width=34
+						height=11
+					}
+					control {
+						chan="2xfmS1:stage_stack_define.VAL"
+						clr=14
+						bclr=30
+					}
+					label="OUT"
+					press_msg="6"
+					release_msg="0"
+				}
+			}
+		}
+		composite {
+			object {
+				x=996
+				y=524
+				width=159
+				height=13
+			}
+			"composite name"=""
+			children {
+				"message button" {
+					object {
+						x=1048
+						y=525
+						width=15
+						height=11
+					}
+					control {
+						chan="2xfmS1:stage_stack_define.VAL"
+						clr=14
+						bclr=30
+					}
+					label="1"
+					press_msg="7"
+					release_msg="0"
+				}
+				text {
+					object {
+						x=996
+						y=524
+						width=49
+						height=13
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Define"
+				}
+				"message button" {
+					object {
+						x=1121
+						y=525
+						width=34
+						height=11
+					}
+					control {
+						chan="2xfmS1:stage_stack_define.VAL"
+						clr=14
+						bclr=30
+					}
+					label="OUT"
+					press_msg="11"
+					release_msg="0"
+				}
+				"message button" {
+					object {
+						x=1066
+						y=525
+						width=15
+						height=11
+					}
+					control {
+						chan="2xfmS1:stage_stack_define.VAL"
+						clr=14
+						bclr=30
+					}
+					label="2"
+					press_msg="8"
+					release_msg="0"
+				}
+				"message button" {
+					object {
+						x=1085
+						y=525
+						width=15
+						height=11
+					}
+					control {
+						chan="2xfmS1:stage_stack_define.VAL"
+						clr=14
+						bclr=30
+					}
+					label="3"
+					press_msg="9"
+					release_msg="0"
+				}
+				"message button" {
+					object {
+						x=1103
+						y=525
+						width=15
+						height=11
+					}
+					control {
+						chan="2xfmS1:stage_stack_define.VAL"
+						clr=14
+						bclr=30
+					}
+					label="4"
+					press_msg="10"
+					release_msg="0"
+				}
+			}
+		}
+		composite {
+			object {
+				x=1175
+				y=527
+				width=179
+				height=11
+			}
+			"composite name"=""
+			children {
+				"message button" {
+					object {
+						x=1227
+						y=527
+						width=40
+						height=11
+					}
+					control {
+						chan="2xfmS1:stage_stack_define.VAL"
+						clr=14
+						bclr=30
+					}
+					label="CCD"
+					press_msg="12"
+				}
+				text {
+					object {
+						x=1175
+						y=527
+						width=49
+						height=11
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Define"
+				}
+				"message button" {
+					object {
+						x=1271
+						y=527
+						width=40
+						height=11
+					}
+					control {
+						chan="2xfmS1:stage_stack_define.VAL"
+						clr=14
+						bclr=30
+					}
+					label="CFG"
+					press_msg="13"
+					release_msg="0"
+				}
+				"message button" {
+					object {
+						x=1314
+						y=527
+						width=40
+						height=11
+					}
+					control {
+						chan="2xfmS1:stage_stack_define.VAL"
+						clr=14
+						bclr=30
+					}
+					label="Ptycho"
+					press_msg="14"
+					release_msg="0"
+				}
+			}
+		}
+	}
+	"dynamic attribute" {
+		vis="calc"
+		calc="A=1"
+		chan="2xfmS1:user_mode.VAL"
+	}
+}
+composite {
+	object {
+		x=1199
+		y=61
+		width=100
+		height=15
+	}
+	"composite name"=""
+	children {
+		"message button" {
+			object {
+				x=1199
+				y=61
+				width=100
+				height=15
+			}
+			control {
+				chan="2xfmS1:user_mode.VAL"
+				clr=14
+				bclr=15
+			}
+			label="User Mode"
+			press_msg="1"
+		}
+	}
+	"dynamic attribute" {
+		vis="calc"
+		calc="A=0"
+		chan="2xfmS1:user_mode.VAL"
+	}
+}
+composite {
+	object {
+		x=1199
+		y=61
+		width=100
+		height=15
+	}
+	"composite name"=""
+	children {
+		"message button" {
+			object {
+				x=1199
+				y=61
+				width=100
+				height=15
+			}
+			control {
+				chan="2xfmS1:user_mode.VAL"
+				clr=14
+				bclr=30
+			}
+			label="Advanced Mode"
+			press_msg="0"
+		}
+	}
+	"dynamic attribute" {
+		vis="calc"
+		calc="A=1"
+		chan="2xfmS1:user_mode.VAL"
+	}
+}
+composite {
+	object {
+		x=703
+		y=281
+		width=100
+		height=15
+	}
+	"composite name"=""
+	children {
+		"message button" {
+			object {
+				x=703
+				y=281
+				width=100
+				height=15
+			}
+			control {
+				chan="2xfmS1:zp_choice.VAL"
+				clr=14
+				bclr=51
+			}
+			label="High Flux"
+			press_msg="1"
+		}
+	}
+	"dynamic attribute" {
+		vis="calc"
+		calc="A=0"
+		chan="2xfmS1:zp_choice.VAL"
+	}
+}
+composite {
+	object {
+		x=703
+		y=281
+		width=100
+		height=15
+	}
+	"composite name"=""
+	children {
+		"message button" {
+			object {
+				x=703
+				y=281
+				width=100
+				height=15
+			}
+			control {
+				chan="2xfmS1:zp_choice.VAL"
+				clr=14
+				bclr=51
+			}
+			label="High Resolution"
+			press_msg="0"
+		}
+	}
+	"dynamic attribute" {
+		vis="calc"
+		calc="A=1"
+		chan="2xfmS1:zp_choice.VAL"
 	}
 }
