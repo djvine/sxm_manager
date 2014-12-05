@@ -562,12 +562,24 @@ class SXM_Manager(object):
 
             done = False
             epics.caput('2xfm:scanPause.VAL', 0)
+            fn_root = epics.caget('2xfm:saveData_fileSystem')
+            fn_subdir = epics.caget('2xfm:saveData_subDir')
+            fn_basename = epics.caget('2xfm:saveData_baseName')
+            std_mda_num = epics.caget('2xfm:saveData_scanNumber')
+            time.sleep(1.0)
+            fp_str = os.path.join(fn_root, fn_subdir)
             print('Starting step scan...')
             self.scan2.EXSC = 1
             time.sleep(10.0)
             while not done:
                 time.sleep(5.0)
                 done = self.scan2.BUSY==0
+            # Make a copy of the mda file and name it "axo_std.mda"
+            try:
+                shutil.copy(os.path.join(fp_str, fn_basename+'_{:04d}.mda'.format(std_mda_num)), os.path.join(fp_str, 'axo_std.mda'))
+            except IOError:
+                print('Could not create axo_std.mda')
+                raise
             print('Step scan done.')
 
             # Fly Scan
