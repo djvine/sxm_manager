@@ -248,13 +248,14 @@ class SXM_Manager(object):
         # 500 micron pinhole which is set to (x,y)=(0,0)
         self.thinking.put(1)
 
-        if value==5: # 500micron pinhole
-            self.pinhole.redefine_to({'x':0, 'y':0})
-            time.sleep(0.1)
-        epics.caput(self.soft_prefix+'pinhole_x_{:d}.VAL'.format(value), self.pinhole.x.VAL)
-        epics.caput(self.soft_prefix+'pinhole_y_{:d}.VAL'.format(value), self.pinhole.y.VAL)
-        time.sleep(0.1)
-        self.pinhole_move(pvname, value)
+        if value<999:
+            print(pvname, value)
+            if value==5: # 500micron pinhole
+                self.pinhole.redefine_to({'x':0, 'y':0})
+                time.sleep(0.2)
+            epics.caput(self.soft_prefix+'pinhole_x_{:d}.VAL'.format(value), self.pinhole.x.VAL)
+            epics.caput(self.soft_prefix+'pinhole_y_{:d}.VAL'.format(value), self.pinhole.y.VAL)
+        self.c_pvs[self.soft_prefix+'pinhole_define.VAL'].put(1001)
         self.thinking.put(0)
 
     def stage_stack_move(self, value, wait=False, **kwargs):
