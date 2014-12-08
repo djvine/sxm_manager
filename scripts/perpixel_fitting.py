@@ -39,9 +39,10 @@ jobs_dir = '/mnt/xfm0/data/jobs'
 zip_dir = '/mnt/xfm0/data/{station:s}/{run:s}'
 ftp_dir = '/net/ftp/ftp/pub/user2ide/{station:s}/{run:s}'
 
-message = "PERPIXEL FITTING SCHEDULING UPDATE\n\nThe following results pertain to datasets older than {:d} and more recent than {:d}\n\n".format(older_than, more_recent_than)
+message = "PERPIXEL FITTING SCHEDULING UPDATE\n\nThe following results pertain to datasets older than {:d} days and more recent than {:d} days.\n\n".format(older_than, more_recent_than)
 for fn in glob.glob(watch_directory+'livejob*'):
     print('Starting: {:s}'.format(fn))
+    ipdb.set_trace()
     # check modification time of livejob file
     mtime = dt.datetime.fromtimestamp(os.path.getmtime(fn))
     now = dt.datetime.now()
@@ -87,7 +88,7 @@ for fn in glob.glob(watch_directory+'livejob*'):
             # Has dataset been processed through stage 1?
             if processing_vars['A']=='1' and processing_vars['B']=='1':
                 # Is there an axo_std mda file?
-                if not os.path.exists('/mnt/xfm0/data/{station:s}/{run:s}/{user:s}/mda/axo_std.mda'):
+                if not os.path.exists('/mnt/xfm0/data/{station:s}/{run:s}/{user:s}/mda/axo_std.mda'.format(**processing_vars)):
                     print('Stage 2 processing delayed. Could not find axo_std')
                     message+="[{run:s} {station:s} {user:s}] Stage 2 processing delayed. Could not find axo_std.mda\n".format(**processing_vars)
                     continue
