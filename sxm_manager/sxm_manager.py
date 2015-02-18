@@ -1,5 +1,6 @@
 #!/usr/bin/python2
 import signal
+import re
 import glob
 import sys
 import os
@@ -32,6 +33,9 @@ class StageStack(object):
         state = self.lock_state.get()
         self.lock_state.put(1-state)
         for axis in self.axes:
+            if axis=='x':
+                if self.x.DESC.lower()=='sample x':
+                    continue
             getattr(self, axis).disabled = 1-state
 
     def redefine_to(self, vals):
@@ -80,11 +84,6 @@ class SXM_Manager(object):
             if sc in ['scan1', 'FscanH']:
                 self.callbacks[getattr(self, sc).PV('CPT').pvname] = 'update_time_remaining'
 
-        # define scalers
-        print('Initialize scalers...')
-        for sc in cfg.scalers:
-            setattr(self, sc, scaler.Scaler(self.ioc_prefix+sc))
-
         # define stage stacks
         print('Intialize stage stacks...')
         for stack in cfg.stage_stacks.keys():
@@ -95,6 +94,8 @@ class SXM_Manager(object):
         self.scan_axis_name_2 = epics.PV(self.soft_prefix+'scan_axis_name_2')
         self.abort_scan = epics.PV(self.ioc_prefix+'AbortScans.PROC')
         self.thinking = epics.PV(self.soft_prefix+'thinking.VAL')
+        self.zp_moving = epics.PV(self.soft_prefix+'zp_moving.VAL')
+        self.osa_moving = epics.PV(self.soft_prefix+'osa_moving.VAL')
 
         # Define common scan axes
         self.scan_axes = cfg.scan_axes
@@ -107,6 +108,9 @@ class SXM_Manager(object):
 
         # Add move/define axes
         self.move_define_axes = cfg.move_define_axes
+
+        # Add active zp config
+        self.active_zp = cfg.active_zp
 
         # Add control PVs & callbacks
         print('Initialize callbacks...')
@@ -155,10 +159,6 @@ class SXM_Manager(object):
         if value == 1:
 
             if self.stepfly == 'step':
-
-                if self.scan1.P1PV == '2xfm:m24.VAL':
-                    self.scan1.P1WD = -1*abs(self.scan1.P1WD)
-
                 self.scan1.EXSC = 1
 
             if self.stepfly == 'fly':
@@ -172,9 +172,6 @@ class SXM_Manager(object):
         if value == 1:
 
             if self.stepfly == 'step':
-
-                if self.scan1.P1PV == '2xfm:m24.VAL':
-                    self.scan1.P1WD = -1*abs(self.scan1.P1WD)
 
                 self.scan2.T1PV = self.scan1.PV('EXSC').pvname
 
@@ -258,13 +255,41 @@ class SXM_Manager(object):
         self.c_pvs[self.soft_prefix+'pinhole_define.VAL'].put(1001)
         self.thinking.put(0)
 
-    def stage_stack_move(self, value, wait=False, **kwargs):
+    def zp_stack_state_change(self, pvname, value, **kwargs):
+        # Handle events from the choosenantor
+        self.zp_moving.put(1)
+        stack_num = epics.caget(pvname.replace('.VAL', '.RVAL'))
+        self.stage_stack_move(pvname, stack_num, wait=True)
+        self.zp_moving.put(0)
+
+    def zp_stack_in_out(self, pvname, value, **kwargs):
+        # Handle events from clicking zp in or out by detemrining the 'active' zp configuration
+        # and moving the correct zps in or out.
+        self.zp_moving.put(1)
+        if value>0:
+            active_zp = epics.caget('2xfmS1:active_zp.VAL')
+            # Always start by moving all out
+            for stack in self.active_zp['all_out']:
+                self.stage_stack_move(None, stack, wait=True)
+
+            if value==1: # Move active ZP in
+                num_zps = int(epics.caget('2xfmS1:num_zps.VAL'))
+                for i in range(num_zps):
+                    self.stage_stack_move(None, self.active_zp[active_zp][i], wait=True)
+        self.zp_moving.put(0)
+
+
+    def stage_stack_move(self, pvname, value, wait=False, **kwargs):
         if value>0:
             stack, location = self.move_define_axes[value]
-
+            if stack == 'osa':
+                wait=True
+                self.osa_moving.put(1)
             for axis in getattr(self, stack).axes:
                 if axis not in ['top', 'middle', 'theta']:
                     getattr(getattr(self, stack), axis).move(epics.caget(self.soft_prefix+'{:s}_{:s}_{:s}.VAL'.format(stack, axis, location)), wait=wait)
+            if stack=='osa':
+                self.osa_moving.put(0)
 
     def stage_stack_define(self, value, **kwargs):
         if value>0:
@@ -275,16 +300,11 @@ class SXM_Manager(object):
                 # Define OSA Out as +3.5mm relative to OSA In
                 epics.caput(self.soft_prefix+'osa_x_out.VAL', 3.5)
                 epics.caput(self.soft_prefix+'osa_y_out.VAL', 0.0)
-            elif stack=='zp20' and location=='in':
-                # Define zp20 out as x=-25
-                epics.caput(self.soft_prefix+'zp20_x_out.VAL', 25.0)
-                epics.caput(self.soft_prefix+'zp20_y_out.VAL', self.zp20.y.VAL)
-                epics.caput(self.soft_prefix+'zp20_z_out.VAL', self.zp20.z.VAL)
-            elif stack=='zp10' and location=='in':
-                # Define zp10 out as x=+10
-                epics.caput(self.soft_prefix+'zp10_x_out.VAL', 10.0)
-                epics.caput(self.soft_prefix+'zp10_y_out.VAL', self.zp20.y.VAL)
-                epics.caput(self.soft_prefix+'zp10_z_out.VAL', self.zp20.z.VAL)
+                time.sleep(1.0)
+            elif re.match('zp\d', stack) and location in ['1','2','3','4']:
+                epics.caput(self.soft_prefix+stack+'_x_out.VAL', getattr(self, stack).x.VAL)
+                epics.caput(self.soft_prefix+stack+'_y_out.VAL', getattr(self, stack).y.VAL+3000)
+                epics.caput(self.soft_prefix+stack+'_z_out.VAL', getattr(self, stack).z.VAL)
             elif stack=='tx_det' and location=='1':
                 # CCD in
                 self.tx_det.redefine_to({'x':0, 'y':0})
@@ -363,17 +383,17 @@ class SXM_Manager(object):
         epics.caput('2xfmS1:alignment_mode_status.VAL', 1)
         if value == 0: # Measurement mode
             # Move OSA in
-            self.stage_stack_move(value=5)
+            self.stage_stack_move(value=24)
             if self.c_pvs[self.soft_prefix+'scan_type_select.VAL'].get() == 0: # CFG
-                self.stage_stack_move(value=13, wait=True)
+                self.stage_stack_move(value=32, wait=True)
             elif self.c_pvs[self.soft_prefix+'scan_type_select.VAL'].get() == 1: # Ptycho
-                self.stage_stack_move(value=14, wait=True)
+                self.stage_stack_move(value=33, wait=True)
 
         elif value == 1: # Alignment mode
             # Move OSA out
-            self.stage_stack_move(value=6, wait=True)
+            self.stage_stack_move(value=25, wait=True)
             # Move CCD in
-            self.stage_stack_move(value=12, wait=True)
+            self.stage_stack_move(value=31, wait=True)
         epics.caput('2xfmS1:alignment_mode_status.VAL', 0)
 
     def push_to_batch(self, value, **kwargs):
@@ -463,23 +483,24 @@ class SXM_Manager(object):
     def update_maps_status():
         user = epics.caget('2xfmS1:user_string.VAL')
         run = epics.caget('2xfmS1:run_string.VAL')
-        machines = {0: 'XFM3', 1: 'XFM3B', 2: 'XFM4', 3: 'XFM4B', 4: 'XFM5', 5: 'XFM5B', 6: 'XFM6', 7: 'XFM6B'}
+        machines = {0: 'XFM2', 1: 'XFM2B', 2: 'XFM3', 3: 'XFM3B', 4: 'XFM4', 5: 'XFM4B',
+            6:'XFM5', 7: 'XFM5B', 8: 'XFM6', 9: 'XFM6B'}
 
         complete_livejob = '/mnt/xfm0/data/2ide/{run:s}/{user:s}/livejob_{run:s}_2ide_{user:s}.txt'.format(**{'user':user, 'run':run})
         waiting_livejob = '/mnt/xfm0/data/jobs/livejob_{run:s}_2ide_{user:s}.txt'.format(**{'user':user, 'run':run})
         processing_livejob = '/mnt/xfm0/data/jobs/processing/livejob_{run:s}_2ide_{user:s}.txt'.format(**{'user':user, 'run':run})
         processing_livejob_machine = '/mnt/xfm0/data/jobs/{machine:s}/livejob_{run:s}_2ide_{user:s}.txt'.format(**{'user':user, 'run':run, 'machine': '{:s}'})
-        message = 'Processing update error'
+        message = 'MAPS Processing: Waiting for update'
 
         if os.path.exists(complete_livejob):
-            message = 'MAPS Processing completed'
+            message = 'MAPS Processing: Completed'
             epics.caput('2xfmS1:maps_processing_status.VAL', 0)
         elif os.path.exists(waiting_livejob):
-            message = 'MAPS job in queue'
+            message = 'MAPS Processing: Job in queue'
             epics.caput('2xfmS1:maps_processing_status.VAL', 1)
         elif os.path.exists(processing_livejob) or \
             any([os.path.exists(processing_livejob_machine.format(val.lower())) for key, val in machines.iteritems()]):
-            message = "MAPS processing in progress"
+            message = "MAPS Processing: In progress"
             epics.caput('2xfmS1:maps_processing_status.VAL', 1)
 
         epics.caput('2xfmS1:maps_status_1.VAL', message)
@@ -487,7 +508,7 @@ class SXM_Manager(object):
         idle_message = '{:s}: IDLE'
         processing_message = '{:s}: {:s} {:s} {:s}'
         xfm0_jobs = '/mnt/xfm0/data/jobs/'
-        for i in range(8):
+        for i in machines.keys():
             if os.path.exists(xfm0_jobs+'status_{:s}_idle.txt'.format(machines[i].lower())):
                 epics.caput('2xfmS1:maps_status_{:d}.VAL'.format(i+2), idle_message.format(machines[i]), timeout=0.1)
             elif os.path.exists(xfm0_jobs+'status_{:s}_working.txt'.format(machines[i].lower())):
@@ -548,15 +569,14 @@ class SXM_Manager(object):
             old_comment = epics.caget('2xfm:userStringCalc10.CC')
             epics.caput('2xfm:userStringCalc10.CC', 'axo_std')
             self.sample.x.move(0, wait=True)
-            self.sample.y.move(-2.55, wait=True)
-            self.sample.z.move(0.5, wait=True)
+            self.sample.y.move(-2.7, wait=True)
 
             # Step scan
             epics.caput(self.soft_prefix+'stepfly.VAL', 0)
             epics.caput(self.soft_prefix+'scan_axes_select.VAL',0)
             epics.caput(self.ioc_prefix+'userTran1.P', 1)
 
-            self.scan1.P1WD = -0.06
+            self.scan1.P1WD = 0.06
             self.scan1.NPTS = 61
             self.scan2.P1WD = 0.02
             self.scan2.NPTS = 3
@@ -568,7 +588,7 @@ class SXM_Manager(object):
             fn_basename = epics.caget('2xfm:saveData_baseName')
             std_mda_num = epics.caget('2xfm:saveData_scanNumber')
             time.sleep(1.0)
-            fp_str = os.path.join(fn_root, fn_subdir)
+            fp_str = os.path.join(fn_root.replace('//xfm0/xfm0-data', '/mnt/xfm0'), fn_subdir)
             print('Starting step scan...')
             self.scan2.EXSC = 1
             time.sleep(10.0)
@@ -577,10 +597,9 @@ class SXM_Manager(object):
                 done = self.scan2.BUSY==0
             # Make a copy of the mda file and name it "axo_std.mda"
             try:
-                shutil.copy(os.path.join(fp_str, fn_basename+'_{:04d}.mda'.format(std_mda_num)), os.path.join(fp_str, 'axo_std.mda'))
+                shutil.copy(os.path.join(fp_str, fn_basename+'{:04d}.mda'.format(std_mda_num)), os.path.join(fp_str, 'axo_std.mda'))
             except IOError:
                 print('Could not create axo_std.mda')
-                raise
             print('Step scan done.')
 
             # Fly Scan

@@ -1062,8 +1062,33 @@ record(bo, "$(P):maps_processing_status") {
   field(VAL, "0")
 }
 
+record(stringout, "$(P):maps_status_11") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+}
+
+record(stringout, "$(P):maps_status_12") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+}
+
+record(stringout, "$(P):maps_status_13") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+}
+
+record(stringout, "$(P):maps_status_14") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+}
+
+record(stringout, "$(P):maps_status_15") {
+  field(SCAN, "Passive")
+  field(DTYP, "Soft Channel")
+}
+
 #! Further lines contain data used by VisualDCT
-#! View(746,691,0.6)
+#! View(853,819,0.6)
 #! Record("$(P):element_1",20,15,0,0,"$(P):element_1")
 #! Record("$(P):element_2",20,195,0,1,"$(P):element_2")
 #! Record("$(P):element_3",20,395,0,1,"$(P):element_3")
@@ -1162,3 +1187,8 @@ record(bo, "$(P):maps_processing_status") {
 #! Record("$(P):maps_status_9",2100,1875,0,1,"$(P):maps_status_9")
 #! Record("$(P):maps_status_10",2280,1875,0,1,"$(P):maps_status_10")
 #! Record("$(P):maps_processing_status",2460,1502,0,1,"$(P):maps_processing_status")
+#! Record("$(P):maps_status_11",1560,1975,0,1,"$(P):maps_status_11")
+#! Record("$(P):maps_status_12",1740,1975,0,1,"$(P):maps_status_12")
+#! Record("$(P):maps_status_13",1920,1975,0,1,"$(P):maps_status_13")
+#! Record("$(P):maps_status_14",2100,1975,0,1,"$(P):maps_status_14")
+#! Record("$(P):maps_status_15",2280,1975,0,1,"$(P):maps_status_15")

@@ -31,7 +31,7 @@ XANES_SCAN: 0\r
 DETECTOR_TO_START_WITH: 0\r
 COMPUTER_TO_USE:\r
 """
-older_than = 14
+older_than = 7
 more_recent_than = 90
 
 watch_directory = '/mnt/xfm0/data/2ide/*/*/'
@@ -40,9 +40,9 @@ zip_dir = '/mnt/xfm0/data/{station:s}/{run:s}'
 ftp_dir = '/net/ftp/ftp/pub/user2ide/{station:s}/{run:s}'
 
 message = "PERPIXEL FITTING SCHEDULING UPDATE\n\nThe following results pertain to datasets older than {:d} days and more recent than {:d} days.\n\n".format(older_than, more_recent_than)
+print(dt.datetime.now())
 for fn in glob.glob(watch_directory+'livejob*'):
     print('Starting: {:s}'.format(fn))
-    ipdb.set_trace()
     # check modification time of livejob file
     mtime = dt.datetime.fromtimestamp(os.path.getmtime(fn))
     now = dt.datetime.now()
@@ -52,7 +52,7 @@ for fn in glob.glob(watch_directory+'livejob*'):
         job = livejob_filename.split('_')[0]
         run = livejob_filename.split('_')[1]
         station = livejob_filename.split('_')[2]
-        user = '_'.join(livejob_filename.strip('.txt').split('_')[3:])
+        user = '_'.join(livejob_filename.replace('.txt', '').split('_')[3:])
         processing_vars = {'A':'0', 'B':'0', 'C':'0', 'D':'0', 'E':'0', 'F':'0'}
         processing_vars['user'] = user
         processing_vars['run'] = run
@@ -100,6 +100,14 @@ for fn in glob.glob(watch_directory+'livejob*'):
                 os.remove(os.path.join(jobs_dir, 'done', job_filename))
                 message+="[{run:s} {station:s} {user:s}] Start stage 2 processing.\n".format(**processing_vars)
                 print('Start stage 2 processing.')
+            elif processing_vars['A']=='1' and processing_vars['B']=='0':
+                # Treat this as if it hadn't been processed
+                processing_vars['A'] = '1'
+                processing_vars['B'] = '1'
+                processing_vars['F'] = '1'
+                message+="[{run:s} {station:s} {user:s}] Start stage 1 processing.\n".format(**processing_vars)
+                print('Start stage 1 processing.')
+
             elif processing_vars['C']=='1':
                 # Processing is completed
 
@@ -108,6 +116,7 @@ for fn in glob.glob(watch_directory+'livejob*'):
                     # Analysis is completed
                     print('Data analysis completed for this dataset')
                     message+="[{run:s} {station:s} {user:s}] Data analysis complete. Nothing to do.\n".format(**processing_vars)
+                    continue
                 else:
                     # Zip the data
                     print('Zipping the data')
@@ -128,6 +137,7 @@ for fn in glob.glob(watch_directory+'livejob*'):
         else: # Processing hasn't begun
             processing_vars['A'] = '1'
             processing_vars['B'] = '1'
+            processing_vars['F'] = '1'
             message+="[{run:s} {station:s} {user:s}] Start stage 1 processing.\n".format(**processing_vars)
             print('Start stage 1 processing')
 
@@ -138,7 +148,7 @@ for fn in glob.glob(watch_directory+'livejob*'):
 
 msg = MIMEText(message)
 sender = 'user2ide@aps.anl.gov'
-recipients = ', '.join(['dvine@anl.gov', 'svogt@aps.anl.gov'])
+recipients = ', '.join(['dvine@anl.gov', 'f.stefan.vogt@gmail.com'])
 msg['Subject'] = 'Per-Pixel Fitting Update'
 msg['From'] = sender
 msg['To'] = recipients
